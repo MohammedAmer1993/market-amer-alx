@@ -43,6 +43,9 @@ const SellerProfile = ({ products, isLoading, error }) => {
     };
 
     fetchSellerProfile();
+    return () => {
+      dispatch({ type: "CLEAR_SELLER_PROFILE_ERROR" }); // Dispatch a new action to clear seller profile errors
+    };
   }, [dispatch, sellerName, products]);
 
   if (isLoading) {
