@@ -10,9 +10,10 @@ import {
   Row,
   Col,
   Spinner,
+  Alert,
 } from "reactstrap";
 
-const SellerProfile = ({ products, isLoading }) => {
+const SellerProfile = ({ products, isLoading, error }) => {
   const { sellerName } = useParams();
   const sellerProducts = products.filter((p) => p.seller === sellerName);
   // Get unique sellers from the products array
@@ -57,6 +58,8 @@ const SellerProfile = ({ products, isLoading }) => {
 
   return (
     <div className="container">
+      {error && <Alert color="danger">{error}</Alert>}{" "}
+      {/* Display error message */}
       <Row>
         <Col md="3">
           {" "}
@@ -98,6 +101,7 @@ const SellerProfile = ({ products, isLoading }) => {
 const mapStateToProps = (state) => ({
   products: state.product.products,
   isLoading: state.product.isLoading, // Get isLoading from Redux store
+  error: state.product.error, // Get error from productReducer
 });
 
 export default connect(mapStateToProps)(SellerProfile);
