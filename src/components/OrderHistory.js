@@ -22,6 +22,7 @@ const OrderHistory = ({
   const [modalOpen, setModalOpen] = useState(false); // State for modal visibility
   const [trackingInfo, setTrackingInfo] = useState(null); // State to store tracking info
   const [trackingOrder, setTrackingOrder] = useState(false); // State for tracking order
+  const [cancellingOrderId, setCancellingOrderId] = useState(null); // State for cancelling order
 
   const dispatch = useDispatch();
 
@@ -75,6 +76,22 @@ const OrderHistory = ({
     };
   }, [dispatch, currentUser]); // Run effect when currentUser or dispatch changes
 
+  const handleCancelOrder = async (orderId) => {
+    setCancellingOrderId(orderId); // Set cancellingOrderId to the order ID
+    dispatch({ type: "CANCEL_ORDER_REQUEST" });
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
+      // In a real app, send the orderId to your backend API to cancel the order
+      dispatch({ type: "CANCEL_ORDER_SUCCESS", payload: orderId });
+      // Update the orders array in the Redux store (you might need to fetch the updated order history)
+      // ...
+    } catch (error) {
+      dispatch({ type: "CANCEL_ORDER_FAILURE", payload: error.message });
+      // ... (display error message) ...
+    } finally {
+      setCancellingOrderId(null); // Reset cancellingOrderId in finally block
+    }
+  };
   if (isLoading) {
     return (
       <div className="text-center">
@@ -130,6 +147,21 @@ const OrderHistory = ({
                   <Button onClick={() => handleTrackOrder(order.id)}>
                     Track Order
                   </Button>
+                  {order.status !== "Cancelled" && ( // Only show Cancel button if order is not cancelled
+                    <>
+                      {isLoading || cancellingOrderId === order.id ? ( // Show spinner while cancelling
+                        <Spinner size="sm" color="danger" />
+                      ) : (
+                        <Button
+                          color="danger"
+                          size="sm"
+                          onClick={() => handleCancelOrder(order.id)}
+                        >
+                          Cancel Order
+                        </Button>
+                      )}
+                    </>
+                  )}
                 </td>
               </tr>
             ))}

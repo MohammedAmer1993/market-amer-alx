@@ -39,6 +39,13 @@ const initialState = {
 
 const productReducer = (state = initialState, action) => {
   switch (action.type) {
+    case "CANCEL_ORDER_REQUEST": // Add this case
+      return { ...state, isLoading: true };
+    case "CANCEL_ORDER_SUCCESS": // Add this case
+      // ... update orders in the state ...
+      return { ...state, isLoading: false };
+    case "CANCEL_ORDER_FAILURE": // Add this case
+      return { ...state, isLoading: false, error: action.payload };
     case "CLEAR_SELLER_PROFILE_ERROR": // Add this case
       return { ...state, error: null };
     case "CLEAR_PRODUCT_LIST_ERROR": // Add this case
