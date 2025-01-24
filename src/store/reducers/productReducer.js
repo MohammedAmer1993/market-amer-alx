@@ -39,6 +39,13 @@ const initialState = {
 
 const productReducer = (state = initialState, action) => {
   switch (action.type) {
+    case "ADD_TO_CART_REQUEST": // Add this case
+      return { ...state, isLoading: true };
+    case "ADD_TO_CART_SUCCESS": // Add this case
+      // ... update cart in the state ...
+      return { ...state, isLoading: false };
+    case "ADD_TO_CART_FAILURE": // Add this case
+      return { ...state, isLoading: false, error: action.payload };
     case "FETCH_REVIEWS_REQUEST": // Add this case
       return { ...state, isLoading: true };
     case "FETCH_REVIEWS_SUCCESS": // Add this case

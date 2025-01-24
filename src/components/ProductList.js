@@ -26,7 +26,22 @@ const ProductList = ({ products, addToCart, isLoading }) => {
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const dispatch = useDispatch(); // Call useDispatch
 
-  const toggleDropdown = () => setDropdownOpen((prevState) => !prevState);
+  const [currentPage, setCurrentPage] = useState(1); // State for current page
+  const productsPerPage = 6; // Number of products to display per page
+
+  // Logic for pagination
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = filteredProducts.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
+
+  // Get unique categories from products
+  const categories = [
+    "All Categories",
+    ...new Set(products.map((p) => p.category)),
+  ];
 
   useEffect(() => {
     // Filter by search term and category
@@ -59,6 +74,8 @@ const ProductList = ({ products, addToCart, isLoading }) => {
     fetchProducts();
   }, [dispatch]); // Run effect only once when the component mounts
 
+  const toggleDropdown = () => setDropdownOpen((prevState) => !prevState);
+
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
@@ -66,12 +83,6 @@ const ProductList = ({ products, addToCart, isLoading }) => {
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
   };
-
-  // Get unique categories from products
-  const categories = [
-    "All Categories",
-    ...new Set(products.map((p) => p.category)),
-  ];
 
   const handleSortChange = (sortOption) => {
     let sortedProducts = [...filteredProducts]; // Create a copy of filteredProducts
@@ -91,18 +102,20 @@ const ProductList = ({ products, addToCart, isLoading }) => {
     setFilteredProducts(sortedProducts); // Update filteredProducts state
   };
 
-  const [currentPage, setCurrentPage] = useState(1); // State for current page
-  const productsPerPage = 6; // Number of products to display per page
-
-  // Logic for pagination
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = filteredProducts.slice(
-    indexOfFirstProduct,
-    indexOfLastProduct
-  );
-
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const handleAddToCart = async (product) => {
+    // Make handleAddToCart async
+    dispatch({ type: "ADD_TO_CART_REQUEST" });
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate API call delay
+      // In a real app, send the product data to your backend API to add to cart
+      dispatch({ type: "ADD_TO_CART_SUCCESS", payload: product });
+      addToCart(product); // This might be redundant if you update the cart in the reducer
+    } catch (error) {
+      dispatch({ type: "ADD_TO_CART_FAILURE", payload: error.message });
+    }
+  };
 
   return (
     <div className="container">
@@ -168,7 +181,7 @@ const ProductList = ({ products, addToCart, isLoading }) => {
                   <Link to={`/product/${product.id}`}>
                     <Button>View Details</Button>
                   </Link>
-                  <Button onClick={() => addToCart(product)}>
+                  <Button onClick={() => handleAddToCart(product)}>
                     Add to Cart
                   </Button>
                 </CardBody>
