@@ -7,6 +7,7 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading, error }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [promoCode, setPromoCode] = useState("");
+  const [placingOrder, setPlacingOrder] = useState(false); // State for placing order
 
   const calculateTotal = () => {
     let total = cart.reduce((total, item) => total + item.price, 0);
@@ -20,6 +21,8 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading, error }) => {
   const handlePlaceOrder = async () => {
     // Make handlePlaceOrder async
     dispatch({ type: "PLACE_ORDER_REQUEST" }); // Dispatch request action
+    setPlacingOrder(true); // Set placingOrder to true
+
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
       // In a real app, send order details to your backend API
@@ -30,6 +33,8 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading, error }) => {
       navigate("/order-history");
     } catch (error) {
       dispatch({ type: "PLACE_ORDER_FAILURE", payload: error.message });
+    } finally {
+      setPlacingOrder(false); // Set placingOrder to false in finally block
     }
   };
 
@@ -76,7 +81,7 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading, error }) => {
                   <td>${item.price}</td>
                   <td>1</td> {/* For now, we'll assume quantity is 1 */}
                   <td>
-                    {isLoading ? ( // Show spinner while placing order
+                    {isLoading || placingOrder ? ( // Show spinner while placing order
                       <Spinner color="primary" />
                     ) : (
                       <>
