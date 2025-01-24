@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { connect, useDispatch } from "react-redux"; // Import useDispatch
+import { connect, useDispatch } from "react-redux";
 import {
   Card,
   CardImg,
@@ -18,9 +18,10 @@ import {
   Label,
   Input,
   Spinner,
+  Alert, // Import Alert
 } from "reactstrap";
 
-const ProductDetails = ({ products, addToCart, isLoading }) => {
+const ProductDetails = ({ products, addToCart, isLoading, error }) => {
   const [modalOpen, setModalOpen] = useState(false); // State for modal visibility
   const [reviewText, setReviewText] = useState(""); // State for review text
   const [reviews, setReviews] = useState([]); // State to store reviews
@@ -184,10 +185,12 @@ const ProductDetails = ({ products, addToCart, isLoading }) => {
       </Modal>
       <div>
         <h3>Reviews</h3>
-        {isLoading ? ( // Show spinner while fetching reviews
+        {isLoading ? (
           <div className="text-center">
             <Spinner color="primary" />
           </div>
+        ) : error ? ( // Show error message if there's an error fetching reviews
+          <Alert color="danger">{error}</Alert>
         ) : (
           reviews.map((review, index) => (
             <div key={index}>
@@ -202,6 +205,7 @@ const ProductDetails = ({ products, addToCart, isLoading }) => {
 const mapStateToProps = (state) => ({
   products: state.product.products,
   isLoading: state.product.isLoading, // Get isLoading from Redux store
+  error: state.product.error, // Get error from productReducer
 });
 
 const mapDispatchToProps = (dispatch) => ({
