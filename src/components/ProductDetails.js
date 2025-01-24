@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import {
   Card,
@@ -8,7 +8,9 @@ import {
   CardTitle,
   CardText,
   Button,
+  CardSubtitle,
 } from "reactstrap";
+
 const ProductDetails = ({ products, addToCart }) => {
   const { productId } = useParams();
   const product = products.find((p) => p.id === parseInt(productId, 10));
@@ -16,6 +18,10 @@ const ProductDetails = ({ products, addToCart }) => {
   if (!product) {
     return <div>Product not found.</div>;
   }
+
+  const similarProducts = products
+    .filter((p) => p.id !== product.id && p.category === product.category)
+    .slice(0, 3);
 
   return (
     <div className="container">
@@ -34,8 +40,7 @@ const ProductDetails = ({ products, addToCart }) => {
                 <p>
                   Seller:{" "}
                   <Link to={`/seller/${product.seller}`}>{product.seller}</Link>
-                </p>{" "}
-                {/* Link to seller profile */}
+                </p>
                 <p>Description: {product.description}</p>
               </CardText>
               <Button onClick={() => addToCart(product)}>Add to Cart</Button>
@@ -43,11 +48,35 @@ const ProductDetails = ({ products, addToCart }) => {
           </Card>
         </div>
       </div>
-      {/* We'll add similar products here later */}
+
+      {/* Similar Products Section */}
+      <h2>Similar Products</h2>
+      <div className="row">
+        {similarProducts.map((similarProduct) => (
+          <div className="col-md-4 mb-4" key={similarProduct.id}>
+            <Card>
+              <Link to={`/product/${similarProduct.id}`}>
+                <CardImg
+                  top
+                  src={similarProduct.imageUrl}
+                  alt={similarProduct.name}
+                />
+                <CardBody>
+                  <CardTitle tag="h5">{similarProduct.name}</CardTitle>
+                  <CardSubtitle className="mb-2 text-muted" tag="h6">
+                    ${similarProduct.price}
+                  </CardSubtitle>
+                  {/* Display seller information */}
+                  <CardText>Sold by: {similarProduct.seller}</CardText>
+                </CardBody>
+              </Link>
+            </Card>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
-
 const mapStateToProps = (state) => ({
   products: state.product.products,
 });

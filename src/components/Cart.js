@@ -1,26 +1,23 @@
-// src/components/Cart.js
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
-import { Table, Button } from "reactstrap";
+import { Table, Button, Input } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 
 const Cart = ({ cart, removeFromCart, placeOrder }) => {
   const navigate = useNavigate();
+  const [promoCode, setPromoCode] = useState("");
 
   const calculateTotal = () => {
-    return cart.reduce((total, item) => total + item.price, 0);
+    let total = cart.reduce((total, item) => total + item.price, 0);
+    // Apply promo code logic here (e.g., if promoCode === 'DISCOUNT10', apply 10% discount)
+    if (promoCode === "DISCOUNT10") {
+      total *= 0.9; // Apply 10% discount
+    }
+    return total;
   };
 
   const handlePlaceOrder = () => {
-    const order = {
-      id: Date.now(), // Generate a unique ID for the order
-      date: new Date(),
-      items: cart.map((item) => ({ ...item, quantity: 1 })), // Assuming quantity is 1 for now
-      total: calculateTotal(),
-    };
-
-    placeOrder(order);
-    navigate("/order-history"); // Redirect to order history after placing order
+    // ... (rest of the handlePlaceOrder function remains the same) ...
   };
 
   return (
@@ -30,8 +27,18 @@ const Cart = ({ cart, removeFromCart, placeOrder }) => {
         <p>Your cart is empty.</p>
       ) : (
         <div>
-          <Table>{/* ... (table remains the same) */}</Table>
-          <p>Total: ${calculateTotal()}</p>
+          <Table>{/* ... (table remains the same) ... */}</Table>
+          {/* Promo Code Input */}
+          <div className="mb-3">
+            <Input
+              type="text"
+              placeholder="Enter promo code"
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value)}
+            />
+          </div>
+          <p>Total: ${calculateTotal().toFixed(2)}</p>{" "}
+          {/* Display total with 2 decimal places */}
           <Button color="primary" onClick={handlePlaceOrder}>
             Place Order
           </Button>
