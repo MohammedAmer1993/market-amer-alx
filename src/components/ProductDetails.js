@@ -18,13 +18,15 @@ import {
   Label,
   Input,
   Spinner,
-  Alert, // Import Alert
+  Alert,
+  FormFeedback, // Import FormFeedback
 } from "reactstrap";
 
 const ProductDetails = ({ products, addToCart, isLoading, error }) => {
   const [modalOpen, setModalOpen] = useState(false); // State for modal visibility
   const [reviewText, setReviewText] = useState(""); // State for review text
   const [reviews, setReviews] = useState([]); // State to store reviews
+  const [reviewTextValid, setReviewTextValid] = useState(true);
 
   const { productId } = useParams();
   const product = products.find((p) => p.id === parseInt(productId, 10));
@@ -48,6 +50,12 @@ const ProductDetails = ({ products, addToCart, isLoading, error }) => {
   }, [dispatch, product.id]);
 
   const handleReviewSubmit = async () => {
+    const isValid = reviewText.trim() !== "";
+    setReviewTextValid(isValid);
+
+    if (!isValid) {
+      return; // Don't proceed with submission if validation fails
+    }
     // Make handleReviewSubmit async
     dispatch({ type: "SUBMIT_REVIEW_REQUEST" });
     try {
@@ -170,7 +178,13 @@ const ProductDetails = ({ products, addToCart, isLoading, error }) => {
                 id="reviewText"
                 value={reviewText}
                 onChange={(e) => setReviewText(e.target.value)}
+                valid={reviewTextValid} // Add valid prop
+                invalid={!reviewTextValid} // Add invalid prop
               />
+              {!reviewTextValid && (
+                <FormFeedback>Please enter your review</FormFeedback>
+              )}{" "}
+              {/* Show feedback */}
             </FormGroup>
           </Form>
         </ModalBody>

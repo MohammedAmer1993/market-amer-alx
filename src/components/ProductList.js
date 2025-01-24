@@ -16,10 +16,11 @@ import {
   PaginationItem,
   PaginationLink,
   Spinner,
+  Alert,
 } from "reactstrap";
 import { Link } from "react-router-dom";
 
-const ProductList = ({ products, addToCart, isLoading }) => {
+const ProductList = ({ products, addToCart, isLoading, error }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredProducts, setFilteredProducts] = useState(products);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -127,7 +128,6 @@ const ProductList = ({ products, addToCart, isLoading }) => {
           onChange={handleSearchChange}
         />
       </div>
-
       {/* Category Dropdown */}
       <div className="mb-3">
         <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
@@ -144,7 +144,6 @@ const ProductList = ({ products, addToCart, isLoading }) => {
           </DropdownMenu>
         </Dropdown>
       </div>
-
       <div className="mb-3">
         <label htmlFor="sortSelect">Sort by:</label>
         <select
@@ -157,7 +156,6 @@ const ProductList = ({ products, addToCart, isLoading }) => {
           {/* Add more sorting options as needed */}
         </select>
       </div>
-
       {isLoading ? ( // Show spinner if isLoading is true
         <div className="text-center">
           <Spinner color="primary" />
@@ -190,7 +188,6 @@ const ProductList = ({ products, addToCart, isLoading }) => {
           ))}
         </div>
       )}
-
       <Pagination className="mt-3">
         {Array.from({
           length: Math.ceil(filteredProducts.length / productsPerPage),
@@ -202,12 +199,16 @@ const ProductList = ({ products, addToCart, isLoading }) => {
           </PaginationItem>
         ))}
       </Pagination>
+      {error && <Alert color="danger">{error}</Alert>}{" "}
+      {/* Display error message */}
     </div>
   );
 };
 
 const mapStateToProps = (state) => ({
   products: state.product.products,
+  isLoading: state.product.isLoading,
+  error: state.product.error, // Get error from productReducer
 });
 
 const mapDispatchToProps = (dispatch) => ({

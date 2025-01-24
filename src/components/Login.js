@@ -1,4 +1,3 @@
-// src/components/Login.js
 import React, { useState } from "react";
 import {
   Form,
@@ -8,18 +7,32 @@ import {
   Button,
   Spinner,
   Alert,
-} from "reactstrap"; // Import Alert
+  FormFeedback, // Import FormFeedback
+} from "reactstrap";
 import { connect, useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 
 const Login = ({ login, isLoading, error }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [usernameValid, setUsernameValid] = useState(true);
+  const [passwordValid, setPasswordValid] = useState(true);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const handleLogin = async (e) => {
     // Make handleLogin async
     e.preventDefault();
+
+    // Basic validation (you can add more complex validation as needed)
+    const isUsernameValid = username.trim() !== "";
+    const isPasswordValid = password.trim() !== "";
+    setUsernameValid(isUsernameValid);
+    setPasswordValid(isPasswordValid);
+
+    if (!isUsernameValid || !isPasswordValid) {
+      return; // Don't proceed with login if validation fails
+    }
     dispatch({ type: "LOGIN_REQUEST" });
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
@@ -59,7 +72,13 @@ const Login = ({ login, isLoading, error }) => {
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              valid={usernameValid} // Add valid prop
+              invalid={!usernameValid} // Add invalid prop
             />
+            {!usernameValid && (
+              <FormFeedback>Please enter a username</FormFeedback>
+            )}{" "}
+            {/* Show feedback */}
           </FormGroup>
           <FormGroup>
             <Label for="password">Password</Label>
@@ -69,7 +88,13 @@ const Login = ({ login, isLoading, error }) => {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              valid={passwordValid} // Add valid prop
+              invalid={!passwordValid} // Add invalid prop
             />
+            {!passwordValid && (
+              <FormFeedback>Please enter a password</FormFeedback>
+            )}{" "}
+            {/* Show feedback */}
           </FormGroup>
           {error && <Alert color="danger">{error}</Alert>}{" "}
           {/* Display error message */}
