@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import {
   Card,
   CardImg,
@@ -24,6 +24,7 @@ const ProductList = ({ products, addToCart, isLoading }) => {
   const [filteredProducts, setFilteredProducts] = useState(products);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
+  const dispatch = useDispatch(); // Call useDispatch
 
   const toggleDropdown = () => setDropdownOpen((prevState) => !prevState);
 
@@ -42,6 +43,21 @@ const ProductList = ({ products, addToCart, isLoading }) => {
     });
     setFilteredProducts(filtered);
   }, [searchTerm, products, selectedCategory]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      // Simulate fetching products with a delay
+      dispatch({ type: "FETCH_PRODUCTS_REQUEST" }); // Dispatch request action
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate 1-second delay
+        dispatch({ type: "FETCH_PRODUCTS_SUCCESS", payload: products }); // Dispatch success action
+      } catch (error) {
+        dispatch({ type: "FETCH_PRODUCTS_FAILURE", payload: error.message }); // Dispatch failure action
+      }
+    };
+
+    fetchProducts();
+  }, [dispatch]); // Run effect only once when the component mounts
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);

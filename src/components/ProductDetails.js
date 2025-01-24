@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"; // Import useEffect
 import { useParams, Link } from "react-router-dom";
-import { connect } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import {
   Card,
   CardImg,
@@ -17,9 +17,10 @@ import {
   FormGroup,
   Label,
   Input,
+  Spinner,
 } from "reactstrap";
 
-const ProductDetails = ({ products, addToCart }) => {
+const ProductDetails = ({ products, addToCart, isLoading }) => {
   const [modalOpen, setModalOpen] = useState(false); // State for modal visibility
   const [reviewText, setReviewText] = useState(""); // State for review text
   const [reviews, setReviews] = useState([]); // State to store reviews
@@ -54,6 +55,33 @@ const ProductDetails = ({ products, addToCart }) => {
     .slice(0, 3);
 
   const toggleModal = () => setModalOpen(!modalOpen);
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const fetchProductDetails = async () => {
+      dispatch({ type: "FETCH_PRODUCT_DETAILS_REQUEST" });
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
+        // In a real app, fetch details from your API based on productId
+        dispatch({ type: "FETCH_PRODUCT_DETAILS_SUCCESS", payload: product }); // Assuming product has all details
+      } catch (error) {
+        dispatch({
+          type: "FETCH_PRODUCT_DETAILS_FAILURE",
+          payload: error.message,
+        });
+      }
+    };
+
+    fetchProductDetails();
+  }, [dispatch, product]); // Run effect when productId or dispatch changes
+
+  if (isLoading) {
+    // Show spinner while loading
+    return (
+      <div className="text-center">
+        <Spinner color="primary" />
+      </div>
+    );
+  }
 
   if (!product) {
     return <div>Product not found.</div>;
@@ -152,6 +180,7 @@ const ProductDetails = ({ products, addToCart }) => {
 };
 const mapStateToProps = (state) => ({
   products: state.product.products,
+  isLoading: state.product.isLoading, // Get isLoading from Redux store
 });
 
 const mapDispatchToProps = (dispatch) => ({

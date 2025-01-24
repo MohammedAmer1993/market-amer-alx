@@ -1,4 +1,6 @@
 const initialState = {
+  isLoading: false, // Add isLoading to the initial state
+
   products: [
     // Sample product data (replace with your actual data)
     {
@@ -37,6 +39,24 @@ const initialState = {
 
 const productReducer = (state = initialState, action) => {
   switch (action.type) {
+    case "FETCH_SELLER_PROFILE_REQUEST": // Add this case
+      return { ...state, isLoading: true };
+    case "FETCH_SELLER_PROFILE_SUCCESS": // Add this case
+      return { ...state, isLoading: false, sellerProfile: action.payload }; // Assuming you store seller profile separately
+    case "FETCH_SELLER_PROFILE_FAILURE": // Add this case
+      return { ...state, isLoading: false, error: action.payload };
+    case "FETCH_PRODUCT_DETAILS_REQUEST": // Add this case
+      return { ...state, isLoading: true };
+    case "FETCH_PRODUCT_DETAILS_SUCCESS": // Add this case
+      return { ...state, isLoading: false, productDetails: action.payload }; // Assuming you store details separately
+    case "FETCH_PRODUCT_DETAILS_FAILURE": // Add this case
+      return { ...state, isLoading: false, error: action.payload };
+    case "FETCH_PRODUCTS_REQUEST": // Add this case for fetching products
+      return { ...state, isLoading: true };
+    case "FETCH_PRODUCTS_SUCCESS": // Add this case for successful fetch
+      return { ...state, isLoading: false, products: action.payload };
+    case "FETCH_PRODUCTS_FAILURE": // Add this case for failed fetch
+      return { ...state, isLoading: false, error: action.payload };
     case "ADD_TO_CART":
       return {
         ...state,
