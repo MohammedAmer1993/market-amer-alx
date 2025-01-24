@@ -1,7 +1,7 @@
-// src/components/OrderHistory.js
 import React from "react";
 import { connect } from "react-redux";
 import { Table } from "reactstrap";
+import { Link } from "react-router-dom"; // Import Link
 
 const OrderHistory = ({ orders }) => {
   return (
@@ -18,21 +18,19 @@ const OrderHistory = ({ orders }) => {
               <th>Items</th>
               <th>Total</th>
               <th>Status</th>
-
-              {/* Add more columns as needed (e.g., status, shipping address) */}
             </tr>
           </thead>
           <tbody>
             {orders.map((order) => (
               <tr key={order.id}>
                 <td>{order.id}</td>
-                <td>{order.date.toDateString()}</td>{" "}
-                {/* Assuming date is a Date object */}
+                <td>{order.date.toDateString()}</td>
                 <td>
                   <ul>
                     {order.items.map((item) => (
                       <li key={item.id}>
-                        {item.name} x {item.quantity}
+                        <Link to={`/product/${item.id}`}>{item.name}</Link> x{" "}
+                        {item.quantity}
                       </li>
                     ))}
                   </ul>
@@ -51,7 +49,6 @@ const OrderHistory = ({ orders }) => {
     </div>
   );
 };
-
 const mapStateToProps = (state) => ({
   orders: state.product.orders,
 });

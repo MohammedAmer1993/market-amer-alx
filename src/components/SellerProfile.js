@@ -1,6 +1,5 @@
-// src/components/SellerProfile.js
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom"; // Import Link
 import { connect } from "react-redux";
 import { Card, CardImg, CardBody, CardTitle, CardText } from "reactstrap";
 
@@ -12,9 +11,6 @@ const SellerProfile = ({ products }) => {
     return <div>Seller not found.</div>;
   }
 
-  // You can fetch more seller details from your backend (e.g., rating, description)
-  // For now, we'll just display their products
-
   return (
     <div className="container">
       <h2>{sellerName}'s Profile</h2>
@@ -22,11 +18,15 @@ const SellerProfile = ({ products }) => {
         {sellerProducts.map((product) => (
           <div className="col-md-4 mb-4" key={product.id}>
             <Card>
-              <CardImg top src={product.imageUrl} alt={product.name} />
-              <CardBody>
-                <CardTitle tag="h5">{product.name}</CardTitle>
-                <CardText>${product.price}</CardText>
-              </CardBody>
+              <Link to={`/product/${product.id}`}>
+                {" "}
+                {/* Wrap the card with Link */}
+                <CardImg top src={product.imageUrl} alt={product.name} />
+                <CardBody>
+                  <CardTitle tag="h5">{product.name}</CardTitle>
+                  <CardText>${product.price}</CardText>
+                </CardBody>
+              </Link>
             </Card>
           </div>
         ))}
@@ -34,7 +34,6 @@ const SellerProfile = ({ products }) => {
     </div>
   );
 };
-
 const mapStateToProps = (state) => ({
   products: state.product.products,
 });

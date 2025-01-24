@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react"; // Import useState
 import { connect } from "react-redux";
 import {
   Card,
@@ -7,14 +7,35 @@ import {
   CardTitle,
   CardSubtitle,
   Button,
+  Input,
 } from "reactstrap";
 import { Link } from "react-router-dom";
 
 const ProductList = ({ products, addToCart }) => {
+  const [searchTerm, setSearchTerm] = useState(""); // State for search term
+
+  const handleSearchChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  // Filter products based on search term
+  const filteredProducts = products.filter(
+    (product) =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="container">
+      <Input
+        type="text"
+        placeholder="Search products..."
+        value={searchTerm}
+        onChange={handleSearchChange}
+      />
+
       <div className="row">
-        {products.map((product) => (
+        {filteredProducts.map((product) => (
           <div className="col-md-4 mb-4" key={product.id}>
             <Card>
               <CardImg
