@@ -8,10 +8,11 @@ import {
   ModalBody,
   ModalFooter,
   Spinner,
-} from "reactstrap";
+  Alert,
+} from "reactstrap"; // Import Alert
 import { Link } from "react-router-dom";
 
-const OrderHistory = ({ orders, currentUser, isLoading }) => {
+const OrderHistory = ({ orders, currentUser, isLoading, error }) => {
   const [modalOpen, setModalOpen] = useState(false); // State for modal visibility
   const [trackingInfo, setTrackingInfo] = useState(null); // State to store tracking info
   const dispatch = useDispatch();
@@ -69,7 +70,13 @@ const OrderHistory = ({ orders, currentUser, isLoading }) => {
   return (
     <div className="container">
       <h2>Order History</h2>
-      {orders.length === 0 ? (
+      {isLoading ? (
+        <div className="text-center">
+          <Spinner color="primary" />
+        </div>
+      ) : error ? ( // Show error message if there's an error fetching order history
+        <Alert color="danger">{error}</Alert>
+      ) : orders.length === 0 ? (
         <p>You have no previous orders.</p>
       ) : (
         <Table>
@@ -157,6 +164,7 @@ const mapStateToProps = (state) => ({
   orders: state.product.orders,
   currentUser: state.auth.user,
   isLoading: state.product.isLoading, // Get isLoading from Redux store
+  error: state.product.error, // Get error from productReducer
 });
 
 export default connect(mapStateToProps)(OrderHistory);
