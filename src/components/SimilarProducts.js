@@ -21,7 +21,7 @@ const ProductDetails = ({ products, addToCart }) => {
 
   const similarProducts = products
     .filter((p) => p.id !== product.id && p.category === product.category)
-    .slice(0, 3); // Get up to 3 similar products
+    .slice(0, 3);
 
   return (
     <div className="container">
@@ -52,20 +52,19 @@ const ProductDetails = ({ products, addToCart }) => {
         {similarProducts.map((similarProduct) => (
           <div className="col-md-4 mb-4" key={similarProduct.id}>
             <Card>
-              <CardImg
-                top
-                src={similarProduct.imageUrl}
-                alt={similarProduct.name}
-              />
-              <CardBody>
-                <CardTitle tag="h5">{similarProduct.name}</CardTitle>
-                <CardSubtitle className="mb-2 text-muted" tag="h6">
-                  ${similarProduct.price}
-                </CardSubtitle>
-                <Link to={`/product/${similarProduct.id}`}>
-                  <Button>View Details</Button>
-                </Link>
-              </CardBody>
+              <Link to={`/product/${similarProduct.id}`}>
+                <CardImg
+                  top
+                  src={similarProduct.imageUrl}
+                  alt={similarProduct.name}
+                />
+                <CardBody>
+                  <CardTitle tag="h5">{similarProduct.name}</CardTitle>
+                  <CardSubtitle className="mb-2 text-muted" tag="h6">
+                    ${similarProduct.price}
+                  </CardSubtitle>
+                </CardBody>
+              </Link>
             </Card>
           </div>
         ))}

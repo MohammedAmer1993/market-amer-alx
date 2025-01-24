@@ -1,5 +1,5 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { connect } from "react-redux";
 import {
   Card,
@@ -9,7 +9,6 @@ import {
   CardText,
   Button,
 } from "reactstrap";
-
 const ProductDetails = ({ products, addToCart }) => {
   const { productId } = useParams();
   const product = products.find((p) => p.id === parseInt(productId, 10));

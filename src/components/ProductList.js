@@ -8,6 +8,7 @@ import {
   CardSubtitle,
   Button,
 } from "reactstrap";
+import { Link } from "react-router-dom";
 
 const ProductList = ({ products, addToCart }) => {
   return (
@@ -27,6 +28,9 @@ const ProductList = ({ products, addToCart }) => {
                 <CardSubtitle className="mb-2 text-muted" tag="h6">
                   ${product.price}
                 </CardSubtitle>
+                <Link to={`/product/${product.id}`}>
+                  <Button>View Details</Button>
+                </Link>
                 <Button onClick={() => addToCart(product)}>Add to Cart</Button>
               </CardBody>
             </Card>
