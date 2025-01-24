@@ -8,12 +8,13 @@ import {
   CardSubtitle,
   Button,
   Input,
-  InputGroup,
-  InputGroupText,
   Dropdown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  Pagination,
+  PaginationItem,
+  PaginationLink,
 } from "reactstrap";
 import { Link } from "react-router-dom";
 
@@ -55,6 +56,37 @@ const ProductList = ({ products, addToCart }) => {
     ...new Set(products.map((p) => p.category)),
   ];
 
+  const handleSortChange = (sortOption) => {
+    let sortedProducts = [...filteredProducts]; // Create a copy of filteredProducts
+
+    switch (sortOption) {
+      case "priceAsc":
+        sortedProducts.sort((a, b) => a.price - b.price);
+        break;
+      case "priceDesc":
+        sortedProducts.sort((a, b) => b.price - a.price);
+        break;
+      // Add more sorting cases as needed
+      default:
+        break; // Do nothing for default sorting
+    }
+
+    setFilteredProducts(sortedProducts); // Update filteredProducts state
+  };
+
+  const [currentPage, setCurrentPage] = useState(1); // State for current page
+  const productsPerPage = 6; // Number of products to display per page
+
+  // Logic for pagination
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = filteredProducts.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct
+  );
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
   return (
     <div className="container">
       <div className="mb-3">
@@ -83,6 +115,19 @@ const ProductList = ({ products, addToCart }) => {
         </Dropdown>
       </div>
 
+      <div className="mb-3">
+        <label htmlFor="sortSelect">Sort by:</label>
+        <select
+          id="sortSelect"
+          onChange={(e) => handleSortChange(e.target.value)}
+        >
+          <option value="default">Default</option>
+          <option value="priceAsc">Price (Low to High)</option>
+          <option value="priceDesc">Price (High to Low)</option>
+          {/* Add more sorting options as needed */}
+        </select>
+      </div>
+
       <div className="row">
         {filteredProducts.map((product) => (
           <div className="col-md-4 mb-4" key={product.id}>
@@ -107,6 +152,18 @@ const ProductList = ({ products, addToCart }) => {
           </div>
         ))}
       </div>
+
+      <Pagination className="mt-3">
+        {Array.from({
+          length: Math.ceil(filteredProducts.length / productsPerPage),
+        }).map((_, index) => (
+          <PaginationItem key={index + 1} active={index + 1 === currentPage}>
+            <PaginationLink onClick={() => paginate(index + 1)}>
+              {index + 1}
+            </PaginationLink>
+          </PaginationItem>
+        ))}
+      </Pagination>
     </div>
   );
 };
