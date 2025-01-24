@@ -1,6 +1,14 @@
 import React, { useState } from "react";
-import { Form, FormGroup, Label, Input, Button, Spinner } from "reactstrap";
-import { connect, useDispatch } from "react-redux";
+import {
+  Form,
+  FormGroup,
+  Label,
+  Input,
+  Button,
+  Spinner,
+  Alert,
+} from "reactstrap"; // Import Alert
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const Register = ({ isLoading }) => {
@@ -34,6 +42,9 @@ const Register = ({ isLoading }) => {
       ) : (
         <Form onSubmit={handleRegister}>
           {/* ... (similar to Login form) ... */}
+          {error && <Alert color="danger">{error}</Alert>}{" "}
+          {/* Display error message */}
+          <Button type="submit">Register</Button>
         </Form>
       )}
     </div>
@@ -42,6 +53,7 @@ const Register = ({ isLoading }) => {
 
 const mapStateToProps = (state) => ({
   isLoading: state.auth.isLoading, // Get isLoading from authReducer
+  error: state.auth.error, // Get error from authReducer
 });
 
 export default connect(mapStateToProps, null)(Register);
