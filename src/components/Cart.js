@@ -8,6 +8,7 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading, error }) => {
   const navigate = useNavigate();
   const [promoCode, setPromoCode] = useState("");
   const [placingOrder, setPlacingOrder] = useState(false); // State for placing order
+  const [removingItemId, setRemovingItemId] = useState(null); // State for removing item
 
   const calculateTotal = () => {
     let total = cart.reduce((total, item) => total + item.price, 0);
@@ -40,6 +41,8 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading, error }) => {
 
   const handleRemoveFromCart = async (productId) => {
     // Make handleRemoveFromCart async
+    setRemovingItemId(productId); // Set removingItemId to the product ID
+
     dispatch({ type: "REMOVE_FROM_CART_REQUEST" });
     try {
       await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate API call delay
@@ -48,6 +51,8 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading, error }) => {
       removeFromCart(productId); // This might be redundant if you update the cart in the reducer
     } catch (error) {
       dispatch({ type: "REMOVE_FROM_CART_FAILURE", payload: error.message });
+    } finally {
+      setRemovingItemId(null); // Reset removingItemId in finally block
     }
   };
 
@@ -84,18 +89,20 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading, error }) => {
                     {isLoading || placingOrder ? ( // Show spinner while placing order
                       <Spinner color="primary" />
                     ) : (
-                      <>
-                        <Button color="primary" onClick={handlePlaceOrder}>
-                          Place Order
-                        </Button>
-                        <Button
-                          color="danger"
-                          size="sm"
-                          onClick={() => handleRemoveFromCart(item.id)}
-                        >
-                          Remove
-                        </Button>
-                      </>
+                      <Button color="primary" onClick={handlePlaceOrder}>
+                        Place Order
+                      </Button>
+                    )}
+                    {isLoading || removingItemId === item.id ? ( // Show spinner while removing
+                      <Spinner size="sm" color="danger" />
+                    ) : (
+                      <Button
+                        color="danger"
+                        size="sm"
+                        onClick={() => handleRemoveFromCart(item.id)}
+                      >
+                        Remove
+                      </Button>
                     )}
                   </td>
                 </tr>
