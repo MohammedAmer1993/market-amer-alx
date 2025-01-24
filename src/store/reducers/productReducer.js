@@ -1,6 +1,6 @@
 const initialState = {
   isLoading: false, // Add isLoading to the initial state
-
+  trackingError: null, // Add trackingError to the initial state
   products: [
     // Sample product data (replace with your actual data)
     {
@@ -39,6 +39,12 @@ const initialState = {
 
 const productReducer = (state = initialState, action) => {
   switch (action.type) {
+    case "TRACK_ORDER_REQUEST":
+      return { ...state, isLoading: true, trackingError: null }; // Reset trackingError on request
+    case "TRACK_ORDER_SUCCESS":
+      return { ...state, isLoading: false, trackingInfo: action.payload };
+    case "TRACK_ORDER_FAILURE":
+      return { ...state, isLoading: false, trackingError: action.payload }; // Set trackingError
     case "REMOVE_FROM_CART_REQUEST": // Add this case
       return { ...state, isLoading: true };
     case "REMOVE_FROM_CART_SUCCESS": // Add this case
