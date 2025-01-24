@@ -9,6 +9,7 @@ import {
   ModalFooter,
   Spinner,
   Alert,
+  Input,
 } from "reactstrap";
 import { Link } from "react-router-dom";
 
@@ -23,10 +24,33 @@ const OrderHistory = ({
   const [trackingInfo, setTrackingInfo] = useState(null); // State to store tracking info
   const [trackingOrder, setTrackingOrder] = useState(false); // State for tracking order
   const [cancellingOrderId, setCancellingOrderId] = useState(null); // State for cancelling order
+  const [returnReason, setReturnReason] = useState(""); // State for return reason
 
   const dispatch = useDispatch();
 
   const toggleModal = () => setModalOpen(!modalOpen);
+
+  useEffect(() => {
+    const fetchOrderHistory = async () => {
+      dispatch({ type: "FETCH_ORDER_HISTORY_REQUEST" });
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
+        // In a real app, fetch order history from your API based on currentUser
+        dispatch({ type: "FETCH_ORDER_HISTORY_SUCCESS", payload: orders });
+      } catch (error) {
+        dispatch({
+          type: "FETCH_ORDER_HISTORY_FAILURE",
+          payload: error.message,
+        });
+      }
+    };
+
+    fetchOrderHistory();
+    return () => {
+      dispatch({ type: "CLEAR_ORDER_HISTORY_ERROR" }); // New action to clear order history errors
+      dispatch({ type: "CLEAR_TRACKING_ERROR" }); // New action to clear tracking errors
+    };
+  }, [dispatch, currentUser]); // Run effect when currentUser or dispatch changes
 
   const handleTrackOrder = async (orderId) => {
     setTrackingOrder(true); // Set trackingOrder to true
@@ -54,27 +78,6 @@ const OrderHistory = ({
       setTrackingOrder(false); // Set trackingOrder to false in finally block
     }
   };
-  useEffect(() => {
-    const fetchOrderHistory = async () => {
-      dispatch({ type: "FETCH_ORDER_HISTORY_REQUEST" });
-      try {
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
-        // In a real app, fetch order history from your API based on currentUser
-        dispatch({ type: "FETCH_ORDER_HISTORY_SUCCESS", payload: orders });
-      } catch (error) {
-        dispatch({
-          type: "FETCH_ORDER_HISTORY_FAILURE",
-          payload: error.message,
-        });
-      }
-    };
-
-    fetchOrderHistory();
-    return () => {
-      dispatch({ type: "CLEAR_ORDER_HISTORY_ERROR" }); // New action to clear order history errors
-      dispatch({ type: "CLEAR_TRACKING_ERROR" }); // New action to clear tracking errors
-    };
-  }, [dispatch, currentUser]); // Run effect when currentUser or dispatch changes
 
   const handleCancelOrder = async (orderId) => {
     setCancellingOrderId(orderId); // Set cancellingOrderId to the order ID
@@ -90,6 +93,26 @@ const OrderHistory = ({
       // ... (display error message) ...
     } finally {
       setCancellingOrderId(null); // Reset cancellingOrderId in finally block
+    }
+  };
+
+  const handleReturnOrder = async (orderId) => {
+    // You might want to validate the returnReason here
+
+    dispatch({ type: "RETURN_ORDER_REQUEST" });
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
+      // In a real app, send the orderId and returnReason to your backend API to return the order
+      dispatch({
+        type: "RETURN_ORDER_SUCCESS",
+        payload: { orderId, reason: returnReason },
+      });
+      // Update the orders array in the Redux store (you might need to fetch the updated order history)
+      // ...
+      setReturnReason(""); // Clear the return reason input
+    } catch (error) {
+      dispatch({ type: "RETURN_ORDER_FAILURE", payload: error.message });
+      // ... (display error message) ...
     }
   };
   if (isLoading) {
@@ -162,6 +185,31 @@ const OrderHistory = ({
                       )}
                     </>
                   )}
+                  {order.status !== "Cancelled" &&
+                    order.status !== "Returned" && ( // Show Return button if order is not cancelled or returned
+                      <>
+                        {isLoading ? ( // Show spinner while returning
+                          <Spinner size="sm" color="warning" />
+                        ) : (
+                          <>
+                            <Button
+                              color="warning"
+                              size="sm"
+                              onClick={() => handleReturnOrder(order.id)}
+                            >
+                              Return Order
+                            </Button>
+                            {/* Input for return reason */}
+                            <Input
+                              type="text"
+                              placeholder="Reason for return"
+                              value={returnReason}
+                              onChange={(e) => setReturnReason(e.target.value)}
+                            />
+                          </>
+                        )}
+                      </>
+                    )}
                 </td>
               </tr>
             ))}
