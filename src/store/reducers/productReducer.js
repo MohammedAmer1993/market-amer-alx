@@ -39,6 +39,19 @@ const initialState = {
 
 const productReducer = (state = initialState, action) => {
   switch (action.type) {
+    case "FETCH_REVIEWS_REQUEST": // Add this case
+      return { ...state, isLoading: true };
+    case "FETCH_REVIEWS_SUCCESS": // Add this case
+      return { ...state, isLoading: false, reviews: action.payload }; // Assuming you store reviews separately
+    case "FETCH_REVIEWS_FAILURE": // Add this case
+      return { ...state, isLoading: false, error: action.payload };
+    case "SUBMIT_REVIEW_REQUEST": // Add this case
+      return { ...state, isLoading: true };
+    case "SUBMIT_REVIEW_SUCCESS": // Add this case
+      // ... update reviews in the state ...
+      return { ...state, isLoading: false };
+    case "SUBMIT_REVIEW_FAILURE": // Add this case
+      return { ...state, isLoading: false, error: action.payload };
     case "TRACK_ORDER_REQUEST": // Add this case
       return { ...state, isLoading: true };
     case "TRACK_ORDER_SUCCESS": // Add this case

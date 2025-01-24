@@ -8,7 +8,7 @@ const Login = ({ login, isLoading }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const handleLogin = async (e) => {
     // Make handleLogin async
     e.preventDefault();

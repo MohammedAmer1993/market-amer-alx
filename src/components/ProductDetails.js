@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react"; // Import useEffect
+import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-import { connect, useDispatch } from "react-redux";
+import { connect, useDispatch } from "react-redux"; // Import useDispatch
 import {
   Card,
   CardImg,
@@ -27,27 +27,43 @@ const ProductDetails = ({ products, addToCart, isLoading }) => {
 
   const { productId } = useParams();
   const product = products.find((p) => p.id === parseInt(productId, 10));
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    // Fetch reviews from local storage (or from your backend API)
-    const storedReviews = localStorage.getItem(`reviews-${product.id}`);
-    if (storedReviews) {
-      setReviews(JSON.parse(storedReviews));
-    }
-  }, [product.id]); // Run effect whenever product.id changes
+    const fetchReviews = async () => {
+      dispatch({ type: "FETCH_REVIEWS_REQUEST" });
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
+        // In a real app, fetch reviews from your backend API based on product.id
+        const storedReviews = localStorage.getItem(`reviews-${product.id}`);
+        const reviewsData = storedReviews ? JSON.parse(storedReviews) : [];
+        dispatch({ type: "FETCH_REVIEWS_SUCCESS", payload: reviewsData });
+      } catch (error) {
+        dispatch({ type: "FETCH_REVIEWS_FAILURE", payload: error.message });
+      }
+    };
 
-  const handleReviewSubmit = () => {
-    console.log("New review submitted:", {
-      productId: product.id,
-      review: reviewText,
-    });
-    // Update reviews state and store in local storage
-    const updatedReviews = [...reviews, { text: reviewText }];
-    setReviews(updatedReviews);
-    localStorage.setItem(
-      `reviews-${product.id}`,
-      JSON.stringify(updatedReviews)
-    );
+    fetchReviews();
+  }, [dispatch, product.id]);
+
+  const handleReviewSubmit = async () => {
+    // Make handleReviewSubmit async
+    dispatch({ type: "SUBMIT_REVIEW_REQUEST" });
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
+      // In a real app, send review data to your backend API
+      console.log("New review submitted:", {
+        productId: product.id,
+        review: reviewText,
+      });
+      dispatch({
+        type: "SUBMIT_REVIEW_SUCCESS",
+        payload: { productId: product.id, review: reviewText },
+      });
+      // ... (update reviews state and local storage) ...
+    } catch (error) {
+      dispatch({ type: "SUBMIT_REVIEW_FAILURE", payload: error.message });
+    }
   };
 
   const similarProducts = products
@@ -55,7 +71,6 @@ const ProductDetails = ({ products, addToCart, isLoading }) => {
     .slice(0, 3);
 
   const toggleModal = () => setModalOpen(!modalOpen);
-  const dispatch = useDispatch();
   useEffect(() => {
     const fetchProductDetails = async () => {
       dispatch({ type: "FETCH_PRODUCT_DETAILS_REQUEST" });
@@ -169,11 +184,17 @@ const ProductDetails = ({ products, addToCart, isLoading }) => {
       </Modal>
       <div>
         <h3>Reviews</h3>
-        {reviews.map((review, index) => (
-          <div key={index}>
-            <p>{review.text}</p>
+        {isLoading ? ( // Show spinner while fetching reviews
+          <div className="text-center">
+            <Spinner color="primary" />
           </div>
-        ))}
+        ) : (
+          reviews.map((review, index) => (
+            <div key={index}>
+              <p>{review.text}</p>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

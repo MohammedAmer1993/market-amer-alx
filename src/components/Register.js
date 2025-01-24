@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Form, FormGroup, Label, Input, Button, Spinner } from "reactstrap";
-import { useDispatch } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-const Register = () => {
+const Register = ({ isLoading }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -44,4 +44,4 @@ const mapStateToProps = (state) => ({
   isLoading: state.auth.isLoading, // Get isLoading from authReducer
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Register);
+export default connect(mapStateToProps, null)(Register);
