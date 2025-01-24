@@ -39,6 +39,8 @@ const initialState = {
 
 const productReducer = (state = initialState, action) => {
   switch (action.type) {
+    case "CLEAR_PRODUCT_LIST_ERROR": // Add this case
+      return { ...state, error: null };
     case "CLEAR_ORDER_HISTORY_ERROR": // Add this case
       return { ...state, error: null };
     case "CLEAR_TRACKING_ERROR": // Add this case

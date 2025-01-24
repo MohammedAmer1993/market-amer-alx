@@ -73,6 +73,9 @@ const ProductList = ({ products, addToCart, isLoading, error }) => {
     };
 
     fetchProducts();
+    return () => {
+      dispatch({ type: "CLEAR_PRODUCT_LIST_ERROR" }); // Dispatch a new action to clear product list errors
+    };
   }, [dispatch]); // Run effect only once when the component mounts
 
   const toggleDropdown = () => setDropdownOpen((prevState) => !prevState);
