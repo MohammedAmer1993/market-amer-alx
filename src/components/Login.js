@@ -1,6 +1,14 @@
 // src/components/Login.js
 import React, { useState } from "react";
-import { Form, FormGroup, Label, Input, Button, Spinner } from "reactstrap";
+import {
+  Form,
+  FormGroup,
+  Label,
+  Input,
+  Button,
+  Spinner,
+  Alert,
+} from "reactstrap"; // Import Alert
 import { connect, useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -63,6 +71,8 @@ const Login = ({ login, isLoading }) => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </FormGroup>
+          {error && <Alert color="danger">{error}</Alert>}{" "}
+          {/* Display error message */}
           <Button type="submit">Login</Button>
           <Link to="/register">
             <Button>Register</Button>
@@ -75,6 +85,7 @@ const Login = ({ login, isLoading }) => {
 
 const mapStateToProps = (state) => ({
   isLoading: state.auth.isLoading, // Get isLoading from authReducer
+  error: state.auth.error, // Get error from authReducer
 });
 
 const mapDispatchToProps = (dispatch) => ({
