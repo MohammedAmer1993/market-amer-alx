@@ -1,4 +1,4 @@
-import React, { useState } from "react"; // Import useState
+import React, { useState, useEffect } from "react"; // Import useState
 import { connect } from "react-redux";
 import {
   Card,
@@ -13,17 +13,21 @@ import { Link } from "react-router-dom";
 
 const ProductList = ({ products, addToCart }) => {
   const [searchTerm, setSearchTerm] = useState(""); // State for search term
+  const [filteredProducts, setFilteredProducts] = useState(products); // Initialize with all products
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
-  // Filter products based on search term
-  const filteredProducts = products.filter(
-    (product) =>
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  useEffect(() => {
+    // Filter products whenever searchTerm or products change
+    const filtered = products.filter(
+      (product) =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredProducts(filtered);
+  }, [searchTerm, products]); // Dependency array
 
   return (
     <div className="container">
