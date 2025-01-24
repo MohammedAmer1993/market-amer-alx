@@ -8,10 +8,10 @@ import {
   Spinner,
   Alert,
 } from "reactstrap"; // Import Alert
-import { useDispatch } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-const Register = ({ isLoading }) => {
+const Register = ({ isLoading, error }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();

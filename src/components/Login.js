@@ -12,7 +12,7 @@ import {
 import { connect, useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 
-const Login = ({ login, isLoading }) => {
+const Login = ({ login, isLoading, error }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();

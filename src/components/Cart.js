@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { connect, useDispatch } from "react-redux";
-import { Table, Button, Input, Spinner } from "reactstrap";
+import { Table, Button, Input, Spinner, Alert } from "reactstrap"; // Import Alert
 import { useNavigate } from "react-router-dom";
 
-const Cart = ({ cart, removeFromCart, placeOrder, isLoading }) => {
+const Cart = ({ cart, removeFromCart, placeOrder, isLoading, error }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [promoCode, setPromoCode] = useState("");
@@ -99,6 +99,8 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading }) => {
               onChange={(e) => setPromoCode(e.target.value)}
             />
           </div>
+          {error && <Alert color="danger">{error}</Alert>}{" "}
+          {/* Display error message */}
           {/* Display total with 2 decimal places */}
           <p>Total: ${calculateTotal().toFixed(2)}</p>{" "}
         </div>
@@ -110,6 +112,7 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading }) => {
 const mapStateToProps = (state) => ({
   cart: state.product.cart,
   isLoading: state.product.isLoading, // Get isLoading from Redux store
+  error: state.product.error, // Get error from productReducer
 });
 
 const mapDispatchToProps = (dispatch) => ({
