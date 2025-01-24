@@ -64,6 +64,10 @@ const OrderHistory = ({
     };
 
     fetchOrderHistory();
+    return () => {
+      dispatch({ type: "CLEAR_ORDER_HISTORY_ERROR" }); // New action to clear order history errors
+      dispatch({ type: "CLEAR_TRACKING_ERROR" }); // New action to clear tracking errors
+    };
   }, [dispatch, currentUser]); // Run effect when currentUser or dispatch changes
 
   if (isLoading) {
