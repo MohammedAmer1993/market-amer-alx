@@ -10,6 +10,7 @@ import {
   Spinner,
   Alert,
   Input,
+  FormFeedback,
 } from "reactstrap";
 import { Link } from "react-router-dom";
 
@@ -25,6 +26,7 @@ const OrderHistory = ({
   const [trackingOrder, setTrackingOrder] = useState(false); // State for tracking order
   const [cancellingOrderId, setCancellingOrderId] = useState(null); // State for cancelling order
   const [returnReason, setReturnReason] = useState(""); // State for return reason
+  const [returnReasonValid, setReturnReasonValid] = useState(true); // State for return reason validation
 
   const dispatch = useDispatch();
 
@@ -97,7 +99,12 @@ const OrderHistory = ({
   };
 
   const handleReturnOrder = async (orderId) => {
-    // You might want to validate the returnReason here
+    const isValid = returnReason.trim() !== "";
+    setReturnReasonValid(isValid);
+
+    if (!isValid) {
+      return; // Don't proceed with return if validation fails
+    }
 
     dispatch({ type: "RETURN_ORDER_REQUEST" });
     try {
@@ -205,7 +212,15 @@ const OrderHistory = ({
                               placeholder="Reason for return"
                               value={returnReason}
                               onChange={(e) => setReturnReason(e.target.value)}
+                              valid={returnReasonValid} // Add valid prop
+                              invalid={!returnReasonValid} // Add invalid prop
                             />
+                            {!returnReasonValid && (
+                              <FormFeedback>
+                                Please provide a reason for return
+                              </FormFeedback>
+                            )}{" "}
+                            {/* Show feedback */}
                           </>
                         )}
                       </>
