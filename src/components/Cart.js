@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { connect, useDispatch } from "react-redux"; // Import useDispatch
+import { connect, useDispatch } from "react-redux";
 import { Table, Button, Input, Spinner } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 
@@ -33,6 +33,19 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading }) => {
     }
   };
 
+  const handleRemoveFromCart = async (productId) => {
+    // Make handleRemoveFromCart async
+    dispatch({ type: "REMOVE_FROM_CART_REQUEST" });
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate API call delay
+      // In a real app, send the productId to your backend API to remove from cart
+      dispatch({ type: "REMOVE_FROM_CART_SUCCESS", payload: productId });
+      removeFromCart(productId); // This might be redundant if you update the cart in the reducer
+    } catch (error) {
+      dispatch({ type: "REMOVE_FROM_CART_FAILURE", payload: error.message });
+    }
+  };
+
   return (
     <div className="container">
       <h2>Shopping Cart</h2>
@@ -55,9 +68,18 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading }) => {
           {isLoading ? ( // Show spinner while placing order
             <Spinner color="primary" />
           ) : (
-            <Button color="primary" onClick={handlePlaceOrder}>
-              Place Order
-            </Button>
+            <>
+              <Button color="primary" onClick={handlePlaceOrder}>
+                Place Order
+              </Button>
+              <Button
+                color="danger"
+                size="sm"
+                onClick={() => handleRemoveFromCart(item.id)}
+              >
+                Remove
+              </Button>
+            </>
           )}
         </div>
       )}
