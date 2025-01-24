@@ -1,5 +1,5 @@
-import React, { useState } from "react"; // Import useState
-import { connect } from "react-redux";
+import React, { useState, useEffect } from "react"; // Import useEffect
+import { connect, useDispatch } from "react-redux";
 import {
   Table,
   Button,
@@ -7,12 +7,14 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-} from "reactstrap"; // Import Modal components
+  Spinner,
+} from "reactstrap";
 import { Link } from "react-router-dom";
 
-const OrderHistory = ({ orders, currentUser }) => {
+const OrderHistory = ({ orders, currentUser, isLoading }) => {
   const [modalOpen, setModalOpen] = useState(false); // State for modal visibility
   const [trackingInfo, setTrackingInfo] = useState(null); // State to store tracking info
+  const dispatch = useDispatch();
 
   const toggleModal = () => setModalOpen(!modalOpen);
 
@@ -30,6 +32,31 @@ const OrderHistory = ({ orders, currentUser }) => {
 
     toggleModal(); // Open the modal
   };
+  useEffect(() => {
+    const fetchOrderHistory = async () => {
+      dispatch({ type: "FETCH_ORDER_HISTORY_REQUEST" });
+      try {
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
+        // In a real app, fetch order history from your API based on currentUser
+        dispatch({ type: "FETCH_ORDER_HISTORY_SUCCESS", payload: orders });
+      } catch (error) {
+        dispatch({
+          type: "FETCH_ORDER_HISTORY_FAILURE",
+          payload: error.message,
+        });
+      }
+    };
+
+    fetchOrderHistory();
+  }, [dispatch, currentUser]); // Run effect when currentUser or dispatch changes
+
+  if (isLoading) {
+    return (
+      <div className="text-center">
+        <Spinner color="primary" />
+      </div>
+    );
+  }
   return (
     <div className="container">
       <h2>Order History</h2>
@@ -116,6 +143,7 @@ const OrderHistory = ({ orders, currentUser }) => {
 const mapStateToProps = (state) => ({
   orders: state.product.orders,
   currentUser: state.auth.user,
+  isLoading: state.product.isLoading, // Get isLoading from Redux store
 });
 
 export default connect(mapStateToProps)(OrderHistory);

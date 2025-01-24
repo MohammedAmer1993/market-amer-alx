@@ -39,6 +39,19 @@ const initialState = {
 
 const productReducer = (state = initialState, action) => {
   switch (action.type) {
+    case "PLACE_ORDER_REQUEST": // Add this case
+      return { ...state, isLoading: true };
+    case "PLACE_ORDER_SUCCESS": // Add this case
+      // ... update orders and clear cart ...
+      return { ...state, isLoading: false };
+    case "PLACE_ORDER_FAILURE": // Add this case
+      return { ...state, isLoading: false, error: action.payload };
+    case "FETCH_ORDER_HISTORY_REQUEST": // Add this case
+      return { ...state, isLoading: true };
+    case "FETCH_ORDER_HISTORY_SUCCESS": // Add this case
+      return { ...state, isLoading: false, orders: action.payload };
+    case "FETCH_ORDER_HISTORY_FAILURE": // Add this case
+      return { ...state, isLoading: false, error: action.payload };
     case "FETCH_SELLER_PROFILE_REQUEST": // Add this case
       return { ...state, isLoading: true };
     case "FETCH_SELLER_PROFILE_SUCCESS": // Add this case

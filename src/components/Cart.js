@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { connect } from "react-redux";
-import { Table, Button, Input } from "reactstrap";
+import { connect, useDispatch } from "react-redux"; // Import useDispatch
+import { Table, Button, Input, Spinner } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 
-const Cart = ({ cart, removeFromCart, placeOrder }) => {
+const Cart = ({ cart, removeFromCart, placeOrder, isLoading }) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [promoCode, setPromoCode] = useState("");
 
@@ -16,8 +17,20 @@ const Cart = ({ cart, removeFromCart, placeOrder }) => {
     return total;
   };
 
-  const handlePlaceOrder = () => {
-    // ... (rest of the handlePlaceOrder function remains the same) ...
+  const handlePlaceOrder = async () => {
+    // Make handlePlaceOrder async
+    dispatch({ type: "PLACE_ORDER_REQUEST" }); // Dispatch request action
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
+      // In a real app, send order details to your backend API
+      const order = {
+        // ... order details ...
+      };
+      dispatch({ type: "PLACE_ORDER_SUCCESS", payload: order });
+      navigate("/order-history");
+    } catch (error) {
+      dispatch({ type: "PLACE_ORDER_FAILURE", payload: error.message });
+    }
   };
 
   return (
@@ -39,9 +52,13 @@ const Cart = ({ cart, removeFromCart, placeOrder }) => {
           </div>
           <p>Total: ${calculateTotal().toFixed(2)}</p>{" "}
           {/* Display total with 2 decimal places */}
-          <Button color="primary" onClick={handlePlaceOrder}>
-            Place Order
-          </Button>
+          {isLoading ? ( // Show spinner while placing order
+            <Spinner color="primary" />
+          ) : (
+            <Button color="primary" onClick={handlePlaceOrder}>
+              Place Order
+            </Button>
+          )}
         </div>
       )}
     </div>
@@ -50,6 +67,7 @@ const Cart = ({ cart, removeFromCart, placeOrder }) => {
 
 const mapStateToProps = (state) => ({
   cart: state.product.cart,
+  isLoading: state.product.isLoading, // Get isLoading from Redux store
 });
 
 const mapDispatchToProps = (dispatch) => ({
