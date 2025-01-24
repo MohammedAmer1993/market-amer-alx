@@ -18,19 +18,21 @@ const OrderHistory = ({ orders, currentUser, isLoading }) => {
 
   const toggleModal = () => setModalOpen(!modalOpen);
 
-  const handleTrackOrder = (orderId) => {
-    // ... (fetch tracking information from backend or simulate) ...
-
-    // Update trackingInfo state
-    setTrackingInfo({
-      orderId: orderId,
-      status: "Shipped",
-      estimatedDelivery: "January 28, 2025",
-      trackingUrl: "#",
-      user: currentUser,
-    });
-
-    toggleModal(); // Open the modal
+  const handleTrackOrder = async (orderId) => {
+    // Make handleTrackOrder async
+    dispatch({ type: "TRACK_ORDER_REQUEST" });
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
+      // In a real app, fetch tracking information from your backend API
+      const trackingInfo = {
+        // ... tracking details ...
+      };
+      dispatch({ type: "TRACK_ORDER_SUCCESS", payload: trackingInfo });
+      setTrackingInfo(trackingInfo);
+      toggleModal();
+    } catch (error) {
+      dispatch({ type: "TRACK_ORDER_FAILURE", payload: error.message });
+    }
   };
   useEffect(() => {
     const fetchOrderHistory = async () => {
@@ -108,7 +110,11 @@ const OrderHistory = ({ orders, currentUser, isLoading }) => {
       <Modal isOpen={modalOpen} toggle={toggleModal}>
         <ModalHeader toggle={toggleModal}>Order Tracking</ModalHeader>
         <ModalBody>
-          {trackingInfo ? (
+          {isLoading ? ( // Show spinner while fetching tracking information
+            <div className="text-center">
+              <Spinner color="primary" />
+            </div>
+          ) : trackingInfo ? (
             <div>
               <p>Order ID: {trackingInfo.orderId}</p>
               {/* Display other tracking details */}

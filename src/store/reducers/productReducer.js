@@ -39,6 +39,12 @@ const initialState = {
 
 const productReducer = (state = initialState, action) => {
   switch (action.type) {
+    case "TRACK_ORDER_REQUEST": // Add this case
+      return { ...state, isLoading: true };
+    case "TRACK_ORDER_SUCCESS": // Add this case
+      return { ...state, isLoading: false, trackingInfo: action.payload }; // Assuming you store tracking info separately
+    case "TRACK_ORDER_FAILURE": // Add this case
+      return { ...state, isLoading: false, error: action.payload };
     case "PLACE_ORDER_REQUEST": // Add this case
       return { ...state, isLoading: true };
     case "PLACE_ORDER_SUCCESS": // Add this case
