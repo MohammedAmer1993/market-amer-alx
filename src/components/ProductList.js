@@ -15,10 +15,11 @@ import {
   Pagination,
   PaginationItem,
   PaginationLink,
+  Spinner,
 } from "reactstrap";
 import { Link } from "react-router-dom";
 
-const ProductList = ({ products, addToCart }) => {
+const ProductList = ({ products, addToCart, isLoading }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredProducts, setFilteredProducts] = useState(products);
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -128,30 +129,38 @@ const ProductList = ({ products, addToCart }) => {
         </select>
       </div>
 
-      <div className="row">
-        {filteredProducts.map((product) => (
-          <div className="col-md-4 mb-4" key={product.id}>
-            <Card>
-              <CardImg
-                top
-                width="100%"
-                src={product.imageUrl}
-                alt={product.name}
-              />
-              <CardBody>
-                <CardTitle tag="h5">{product.name}</CardTitle>
-                <CardSubtitle className="mb-2 text-muted" tag="h6">
-                  ${product.price}
-                </CardSubtitle>
-                <Link to={`/product/${product.id}`}>
-                  <Button>View Details</Button>
-                </Link>
-                <Button onClick={() => addToCart(product)}>Add to Cart</Button>
-              </CardBody>
-            </Card>
-          </div>
-        ))}
-      </div>
+      {isLoading ? ( // Show spinner if isLoading is true
+        <div className="text-center">
+          <Spinner color="primary" />
+        </div>
+      ) : (
+        <div className="row">
+          {filteredProducts.map((product) => (
+            <div className="col-md-4 mb-4" key={product.id}>
+              <Card>
+                <CardImg
+                  top
+                  width="100%"
+                  src={product.imageUrl}
+                  alt={product.name}
+                />
+                <CardBody>
+                  <CardTitle tag="h5">{product.name}</CardTitle>
+                  <CardSubtitle className="mb-2 text-muted" tag="h6">
+                    ${product.price}
+                  </CardSubtitle>
+                  <Link to={`/product/${product.id}`}>
+                    <Button>View Details</Button>
+                  </Link>
+                  <Button onClick={() => addToCart(product)}>
+                    Add to Cart
+                  </Button>
+                </CardBody>
+              </Card>
+            </div>
+          ))}
+        </div>
+      )}
 
       <Pagination className="mt-3">
         {Array.from({

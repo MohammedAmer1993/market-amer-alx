@@ -10,7 +10,7 @@ import {
 } from "reactstrap"; // Import Modal components
 import { Link } from "react-router-dom";
 
-const OrderHistory = ({ orders }) => {
+const OrderHistory = ({ orders, currentUser }) => {
   const [modalOpen, setModalOpen] = useState(false); // State for modal visibility
   const [trackingInfo, setTrackingInfo] = useState(null); // State to store tracking info
 
@@ -24,7 +24,8 @@ const OrderHistory = ({ orders }) => {
       orderId: orderId,
       status: "Shipped",
       estimatedDelivery: "January 28, 2025",
-      trackingUrl: "#", // Replace with actual tracking URL from your backend
+      trackingUrl: "#",
+      user: currentUser,
     });
 
     toggleModal(); // Open the modal
@@ -86,7 +87,9 @@ const OrderHistory = ({ orders }) => {
               {/* Display other tracking details */}
               <p>Status: {trackingInfo.status}</p>
               <p>Estimated Delivery: {trackingInfo.estimatedDelivery}</p>
-              {/* ... */}
+              <h4>User Details:</h4>
+              <p>Name: {trackingInfo.user.name}</p>{" "}
+              <p>Email: {trackingInfo.user.email}</p>{" "}
             </div>
           ) : (
             <p>Loading tracking information...</p>
@@ -112,6 +115,7 @@ const OrderHistory = ({ orders }) => {
 };
 const mapStateToProps = (state) => ({
   orders: state.product.orders,
+  currentUser: state.auth.user,
 });
 
 export default connect(mapStateToProps)(OrderHistory);
