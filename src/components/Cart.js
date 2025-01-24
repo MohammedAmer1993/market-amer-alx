@@ -53,7 +53,43 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading }) => {
         <p>Your cart is empty.</p>
       ) : (
         <div>
-          <Table>{/* ... (table remains the same) ... */}</Table>
+          <Table>
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {cart.map((item) => (
+                <tr key={item.id}>
+                  <td>{item.name}</td>
+                  <td>${item.price}</td>
+                  <td>1</td> {/* For now, we'll assume quantity is 1 */}
+                  <td>
+                    {isLoading ? ( // Show spinner while placing order
+                      <Spinner color="primary" />
+                    ) : (
+                      <>
+                        <Button color="primary" onClick={handlePlaceOrder}>
+                          Place Order
+                        </Button>
+                        <Button
+                          color="danger"
+                          size="sm"
+                          onClick={() => handleRemoveFromCart(item.id)}
+                        >
+                          Remove
+                        </Button>
+                      </>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
           {/* Promo Code Input */}
           <div className="mb-3">
             <Input
@@ -63,24 +99,8 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading }) => {
               onChange={(e) => setPromoCode(e.target.value)}
             />
           </div>
-          <p>Total: ${calculateTotal().toFixed(2)}</p>{" "}
           {/* Display total with 2 decimal places */}
-          {isLoading ? ( // Show spinner while placing order
-            <Spinner color="primary" />
-          ) : (
-            <>
-              <Button color="primary" onClick={handlePlaceOrder}>
-                Place Order
-              </Button>
-              <Button
-                color="danger"
-                size="sm"
-                onClick={() => handleRemoveFromCart(item.id)}
-              >
-                Remove
-              </Button>
-            </>
-          )}
+          <p>Total: ${calculateTotal().toFixed(2)}</p>{" "}
         </div>
       )}
     </div>
