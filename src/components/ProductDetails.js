@@ -27,6 +27,7 @@ const ProductDetails = ({ products, addToCart, isLoading, error }) => {
   const [reviewText, setReviewText] = useState(""); // State for review text
   const [reviews, setReviews] = useState([]); // State to store reviews
   const [reviewTextValid, setReviewTextValid] = useState(true);
+  const [submittingReview, setSubmittingReview] = useState(false); // State for submitting review
 
   const { productId } = useParams();
   const product = products.find((p) => p.id === parseInt(productId, 10));
@@ -60,6 +61,8 @@ const ProductDetails = ({ products, addToCart, isLoading, error }) => {
       return; // Don't proceed with submission if validation fails
     }
     // Make handleReviewSubmit async
+    setSubmittingReview(true); // Set submittingReview to true
+
     dispatch({ type: "SUBMIT_REVIEW_REQUEST" });
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
@@ -75,6 +78,8 @@ const ProductDetails = ({ products, addToCart, isLoading, error }) => {
       // ... (update reviews state and local storage) ...
     } catch (error) {
       dispatch({ type: "SUBMIT_REVIEW_FAILURE", payload: error.message });
+    } finally {
+      setSubmittingReview(false); // Set submittingReview to false in finally block
     }
   };
 
@@ -192,12 +197,18 @@ const ProductDetails = ({ products, addToCart, isLoading, error }) => {
           </Form>
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={handleReviewSubmit}>
-            Submit Review
-          </Button>
-          <Button color="secondary" onClick={toggleModal}>
-            Cancel
-          </Button>
+          {submittingReview ? ( // Show spinner while submitting review
+            <Spinner size="sm" color="primary" />
+          ) : (
+            <>
+              <Button color="primary" onClick={handleReviewSubmit}>
+                Submit Review
+              </Button>
+              <Button color="secondary" onClick={toggleModal}>
+                Cancel
+              </Button>
+            </>
+          )}
         </ModalFooter>
       </Modal>
       <div>
