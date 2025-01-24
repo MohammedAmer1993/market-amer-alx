@@ -44,6 +44,9 @@ const ProductDetails = ({ products, addToCart, isLoading, error }) => {
       } catch (error) {
         dispatch({ type: "FETCH_REVIEWS_FAILURE", payload: error.message });
       }
+      return () => {
+        dispatch({ type: "CLEAR_PRODUCT_ERROR" }); // Dispatch a new action to clear product errors
+      };
     };
 
     fetchReviews();

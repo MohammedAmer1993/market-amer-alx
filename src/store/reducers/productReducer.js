@@ -39,6 +39,8 @@ const initialState = {
 
 const productReducer = (state = initialState, action) => {
   switch (action.type) {
+    case "CLEAR_PRODUCT_ERROR": // Add this case
+      return { ...state, error: null };
     case "TRACK_ORDER_REQUEST":
       return { ...state, isLoading: true, trackingError: null }; // Reset trackingError on request
     case "TRACK_ORDER_SUCCESS":

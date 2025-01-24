@@ -9,7 +9,7 @@ import {
   Alert,
   FormFeedback,
 } from "reactstrap";
-import { useDispatch } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const Register = ({ isLoading, error }) => {
