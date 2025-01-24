@@ -25,9 +25,11 @@ const ProductList = ({ products, addToCart, isLoading, error }) => {
   const [filteredProducts, setFilteredProducts] = useState(products);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
+  const [addingToCart, setAddingToCart] = useState(null); // State for adding to cart
+  const [currentPage, setCurrentPage] = useState(1); // State for current page
+
   const dispatch = useDispatch(); // Call useDispatch
 
-  const [currentPage, setCurrentPage] = useState(1); // State for current page
   const productsPerPage = 6; // Number of products to display per page
 
   // Logic for pagination
@@ -110,6 +112,8 @@ const ProductList = ({ products, addToCart, isLoading, error }) => {
 
   const handleAddToCart = async (product) => {
     // Make handleAddToCart async
+    setAddingToCart(product.id); // Set addingToCart to the product ID
+
     dispatch({ type: "ADD_TO_CART_REQUEST" });
     try {
       await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate API call delay
@@ -118,6 +122,8 @@ const ProductList = ({ products, addToCart, isLoading, error }) => {
       addToCart(product); // This might be redundant if you update the cart in the reducer
     } catch (error) {
       dispatch({ type: "ADD_TO_CART_FAILURE", payload: error.message });
+    } finally {
+      setAddingToCart(null); // Reset addingToCart in finally block
     }
   };
 
@@ -182,9 +188,13 @@ const ProductList = ({ products, addToCart, isLoading, error }) => {
                   <Link to={`/product/${product.id}`}>
                     <Button>View Details</Button>
                   </Link>
-                  <Button onClick={() => handleAddToCart(product)}>
-                    Add to Cart
-                  </Button>
+                  {isLoading || addingToCart === product.id ? ( // Show spinner while adding to cart
+                    <Spinner size="sm" color="primary" />
+                  ) : (
+                    <Button onClick={() => handleAddToCart(product)}>
+                      Add to Cart
+                    </Button>
+                  )}
                 </CardBody>
               </Card>
             </div>
