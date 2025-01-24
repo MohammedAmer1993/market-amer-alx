@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"; // Import useState
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import {
   Card,
@@ -8,35 +8,80 @@ import {
   CardSubtitle,
   Button,
   Input,
+  InputGroup,
+  InputGroupText,
+  Dropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem,
 } from "reactstrap";
 import { Link } from "react-router-dom";
 
 const ProductList = ({ products, addToCart }) => {
-  const [searchTerm, setSearchTerm] = useState(""); // State for search term
-  const [filteredProducts, setFilteredProducts] = useState(products); // Initialize with all products
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState(products);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("All Categories");
+
+  const toggleDropdown = () => setDropdownOpen((prevState) => !prevState);
+
+  useEffect(() => {
+    // Filter by search term and category
+    const filtered = products.filter((product) => {
+      const matchesSearch =
+        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchTerm.toLowerCase());
+
+      const matchesCategory =
+        selectedCategory === "All Categories" ||
+        product.category === selectedCategory;
+
+      return matchesSearch && matchesCategory;
+    });
+    setFilteredProducts(filtered);
+  }, [searchTerm, products, selectedCategory]);
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
-  useEffect(() => {
-    // Filter products whenever searchTerm or products change
-    const filtered = products.filter(
-      (product) =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        product.description.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredProducts(filtered);
-  }, [searchTerm, products]); // Dependency array
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+  };
+
+  // Get unique categories from products
+  const categories = [
+    "All Categories",
+    ...new Set(products.map((p) => p.category)),
+  ];
 
   return (
     <div className="container">
-      <Input
-        type="text"
-        placeholder="Search products..."
-        value={searchTerm}
-        onChange={handleSearchChange}
-      />
+      <div className="mb-3">
+        <Input
+          type="text"
+          placeholder="Search products..."
+          value={searchTerm}
+          onChange={handleSearchChange}
+        />
+      </div>
+
+      {/* Category Dropdown */}
+      <div className="mb-3">
+        <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
+          <DropdownToggle caret>{selectedCategory}</DropdownToggle>
+          <DropdownMenu>
+            {categories.map((category) => (
+              <DropdownItem
+                key={category}
+                onClick={() => handleCategoryChange(category)}
+              >
+                {category}
+              </DropdownItem>
+            ))}
+          </DropdownMenu>
+        </Dropdown>
+      </div>
 
       <div className="row">
         {filteredProducts.map((product) => (
