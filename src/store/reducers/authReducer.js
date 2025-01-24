@@ -25,6 +25,12 @@ const authReducer = (state = initialState, action) => {
       };
     case "LOGIN_FAILURE": // Add this case
       return { ...state, isLoading: false, error: action.payload };
+    case "REGISTER_REQUEST": // Add this case
+      return { ...state, isLoading: true };
+    case "REGISTER_SUCCESS": // Add this case
+      return { ...state, isLoading: false };
+    case "REGISTER_FAILURE": // Add this case
+      return { ...state, isLoading: false, error: action.payload };
     default:
       return state;
   }

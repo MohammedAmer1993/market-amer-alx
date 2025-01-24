@@ -81,4 +81,4 @@ const mapDispatchToProps = (dispatch) => ({
   login: () => dispatch({ type: "LOGIN" }), // We'll define this action in authReducer
 });
 
-export default connect(null, mapDispatchToProps)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
