@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react"; // Import useEffect
 import { useParams, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import {
@@ -9,20 +9,55 @@ import {
   CardText,
   Button,
   CardSubtitle,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Form,
+  FormGroup,
+  Label,
+  Input,
 } from "reactstrap";
 
 const ProductDetails = ({ products, addToCart }) => {
+  const [modalOpen, setModalOpen] = useState(false); // State for modal visibility
+  const [reviewText, setReviewText] = useState(""); // State for review text
+  const [reviews, setReviews] = useState([]); // State to store reviews
+
   const { productId } = useParams();
   const product = products.find((p) => p.id === parseInt(productId, 10));
 
-  if (!product) {
-    return <div>Product not found.</div>;
-  }
+  useEffect(() => {
+    // Fetch reviews from local storage (or from your backend API)
+    const storedReviews = localStorage.getItem(`reviews-${product.id}`);
+    if (storedReviews) {
+      setReviews(JSON.parse(storedReviews));
+    }
+  }, [product.id]); // Run effect whenever product.id changes
+
+  const handleReviewSubmit = () => {
+    console.log("New review submitted:", {
+      productId: product.id,
+      review: reviewText,
+    });
+    // Update reviews state and store in local storage
+    const updatedReviews = [...reviews, { text: reviewText }];
+    setReviews(updatedReviews);
+    localStorage.setItem(
+      `reviews-${product.id}`,
+      JSON.stringify(updatedReviews)
+    );
+  };
 
   const similarProducts = products
     .filter((p) => p.id !== product.id && p.category === product.category)
     .slice(0, 3);
 
+  const toggleModal = () => setModalOpen(!modalOpen);
+
+  if (!product) {
+    return <div>Product not found.</div>;
+  }
   return (
     <div className="container">
       <div className="row">
@@ -71,6 +106,44 @@ const ProductDetails = ({ products, addToCart }) => {
                 </CardBody>
               </Link>
             </Card>
+          </div>
+        ))}
+      </div>
+      <Button color="primary" onClick={toggleModal}>
+        Add Review
+      </Button>
+
+      {/* Review Modal */}
+      <Modal isOpen={modalOpen} toggle={toggleModal}>
+        <ModalHeader toggle={toggleModal}>Write a Review</ModalHeader>
+        <ModalBody>
+          <Form>
+            <FormGroup>
+              <Label for="reviewText">Your Review</Label>
+              <Input
+                type="textarea"
+                name="reviewText"
+                id="reviewText"
+                value={reviewText}
+                onChange={(e) => setReviewText(e.target.value)}
+              />
+            </FormGroup>
+          </Form>
+        </ModalBody>
+        <ModalFooter>
+          <Button color="primary" onClick={handleReviewSubmit}>
+            Submit Review
+          </Button>
+          <Button color="secondary" onClick={toggleModal}>
+            Cancel
+          </Button>
+        </ModalFooter>
+      </Modal>
+      <div>
+        <h3>Reviews</h3>
+        {reviews.map((review, index) => (
+          <div key={index}>
+            <p>{review.text}</p>
           </div>
         ))}
       </div>
