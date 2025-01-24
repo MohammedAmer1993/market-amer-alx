@@ -143,14 +143,22 @@ const OrderHistory = ({ orders, currentUser, isLoading, error }) => {
           )}
         </ModalBody>
         <ModalFooter>
-          {trackingInfo && (
-            <a
-              href={trackingInfo.trackingUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              View on Courier Website
-            </a>
+          {isLoading ? (
+            <div className="text-center">
+              <Spinner color="primary" />
+            </div>
+          ) : error ? ( // Show error message if there's an error tracking the order
+            <Alert color="danger">{error}</Alert>
+          ) : (
+            trackingInfo && (
+              <a
+                href={trackingInfo.trackingUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                View on Courier Website
+              </a>
+            )
           )}
           <Button color="secondary" onClick={toggleModal}>
             Close
