@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect, useDispatch } from "react-redux";
 import { Table, Button, Input, Spinner, Alert } from "reactstrap"; // Import Alert
 import { useNavigate } from "react-router-dom";
@@ -45,6 +45,13 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading, error }) => {
       dispatch({ type: "REMOVE_FROM_CART_FAILURE", payload: error.message });
     }
   };
+
+  useEffect(() => {
+    // Clear the error message when the component unmounts
+    return () => {
+      dispatch({ type: "CLEAR_CART_ERROR" }); // Dispatch a new action to clear cart errors
+    };
+  }, [dispatch]);
 
   return (
     <div className="container">
