@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"; // Import useEffect
+import React, { useState, useEffect } from "react";
 import { connect, useDispatch } from "react-redux";
 import {
   Table,
@@ -19,7 +19,6 @@ const OrderHistory = ({ orders, currentUser, isLoading }) => {
   const toggleModal = () => setModalOpen(!modalOpen);
 
   const handleTrackOrder = async (orderId) => {
-    // Make handleTrackOrder async
     dispatch({ type: "TRACK_ORDER_REQUEST" });
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
@@ -27,11 +26,19 @@ const OrderHistory = ({ orders, currentUser, isLoading }) => {
       const trackingInfo = {
         // ... tracking details ...
       };
+
+      // Simulate an error if orderId is 2 (for demonstration)
+      if (orderId === 2) {
+        throw new Error("Failed to fetch tracking information");
+      }
+
       dispatch({ type: "TRACK_ORDER_SUCCESS", payload: trackingInfo });
       setTrackingInfo(trackingInfo);
       toggleModal();
     } catch (error) {
       dispatch({ type: "TRACK_ORDER_FAILURE", payload: error.message });
+      // You can display the error message in the modal or use another approach
+      alert(error.message);
     }
   };
   useEffect(() => {
