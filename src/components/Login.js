@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; // Import useEffect
 import {
   Form,
   FormGroup,
@@ -7,7 +7,7 @@ import {
   Button,
   Spinner,
   Alert,
-  FormFeedback, // Import FormFeedback
+  FormFeedback,
 } from "reactstrap";
 import { connect, useDispatch } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
@@ -20,6 +20,14 @@ const Login = ({ login, isLoading, error }) => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    // Clear the error message when the component unmounts
+    return () => {
+      dispatch({ type: "CLEAR_AUTH_ERROR" });
+    };
+  }, [dispatch]);
+
   const handleLogin = async (e) => {
     // Make handleLogin async
     e.preventDefault();

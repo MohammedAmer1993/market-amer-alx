@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; // Import useEffect
 import {
   Form,
   FormGroup,
@@ -7,9 +7,9 @@ import {
   Button,
   Spinner,
   Alert,
-  FormFeedback, // Import FormFeedback
+  FormFeedback,
 } from "reactstrap";
-import { connect, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const Register = ({ isLoading, error }) => {
@@ -19,6 +19,13 @@ const Register = ({ isLoading, error }) => {
   const [passwordValid, setPasswordValid] = useState(true);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    // Clear the error message when the component unmounts
+    return () => {
+      dispatch({ type: "CLEAR_AUTH_ERROR" });
+    };
+  }, [dispatch]);
 
   const handleRegister = async (e) => {
     // Make handleRegister async
