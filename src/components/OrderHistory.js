@@ -21,11 +21,14 @@ const OrderHistory = ({
 }) => {
   const [modalOpen, setModalOpen] = useState(false); // State for modal visibility
   const [trackingInfo, setTrackingInfo] = useState(null); // State to store tracking info
+  const [trackingOrder, setTrackingOrder] = useState(false); // State for tracking order
+
   const dispatch = useDispatch();
 
   const toggleModal = () => setModalOpen(!modalOpen);
 
   const handleTrackOrder = async (orderId) => {
+    setTrackingOrder(true); // Set trackingOrder to true
     dispatch({ type: "TRACK_ORDER_REQUEST" });
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
@@ -46,6 +49,8 @@ const OrderHistory = ({
       dispatch({ type: "TRACK_ORDER_FAILURE", payload: error.message });
       // You can display the error message in the modal or use another approach
       alert(error.message);
+    } finally {
+      setTrackingOrder(false); // Set trackingOrder to false in finally block
     }
   };
   useEffect(() => {
@@ -134,7 +139,7 @@ const OrderHistory = ({
       <Modal isOpen={modalOpen} toggle={toggleModal}>
         <ModalHeader toggle={toggleModal}>Order Tracking</ModalHeader>
         <ModalBody>
-          {isLoading ? ( // Show spinner while fetching tracking information
+          {isLoading || trackingOrder ? ( // Show spinner while fetching tracking information
             <div className="text-center">
               <Spinner color="primary" />
             </div>
