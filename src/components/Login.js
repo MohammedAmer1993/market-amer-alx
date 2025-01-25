@@ -56,7 +56,6 @@ const Login = ({ login, isLoading, error }) => {
           type: "LOGIN_FAILURE",
           payload: "Invalid username or password",
         });
-        alert("Invalid username or password");
       }
     } catch (error) {
       dispatch({ type: "LOGIN_FAILURE", payload: error.message });

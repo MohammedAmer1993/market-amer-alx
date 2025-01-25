@@ -131,7 +131,6 @@ const OrderHistory = ({
     } catch (error) {
       dispatch({ type: "TRACK_ORDER_FAILURE", payload: error.message });
       // You can display the error message in the modal or use another approach
-      alert(error.message);
     } finally {
       setTrackingOrder(false); // Set trackingOrder to false in finally block
     }

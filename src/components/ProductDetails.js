@@ -19,7 +19,8 @@ import {
   Input,
   Spinner,
   Alert,
-  FormFeedback, // Import FormFeedback
+  FormFeedback,
+  Badge,
 } from "reactstrap";
 
 const ProductDetails = ({ products, addToCart, isLoading, error }) => {
@@ -156,6 +157,28 @@ const ProductDetails = ({ products, addToCart, isLoading, error }) => {
                 </p>
                 <p>Description: {product.description}</p>
               </CardText>
+              <Badge color="warning">
+                <span className="px-1">Rating:</span>
+                {Array(5)
+                  .fill(0)
+                  .map(
+                    (
+                      _,
+                      i // Generate 5 stars
+                    ) => (
+                      <span
+                        key={i}
+                        style={{
+                          color: i < product.rating ? "gold" : "gray",
+                        }}
+                      >
+                        ★
+                      </span>
+                    )
+                  )}
+                {/* Display the rating value */}
+                <span className="ms-2">({product.rating})</span>
+              </Badge>
               <Button onClick={() => addToCart(product)}>Add to Cart</Button>
             </CardBody>
           </Card>
@@ -230,7 +253,7 @@ const ProductDetails = ({ products, addToCart, isLoading, error }) => {
         </ModalFooter>
       </Modal>
       <div>
-        <h3>Reviews</h3>
+        <h3 id="reviews">Reviews</h3>
         {isLoading ? (
           <div className="text-center">
             <Spinner color="primary" />

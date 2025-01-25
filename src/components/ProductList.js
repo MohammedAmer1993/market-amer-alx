@@ -18,8 +18,10 @@ import {
   PaginationLink,
   Spinner,
   Alert,
+  Badge,
 } from "reactstrap";
 import { Link } from "react-router-dom";
+import { color } from "./../../node_modules/tailwindcss/src/util/dataTypes";
 
 const ProductList = ({ products, addToCart, isLoading, error }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -213,6 +215,28 @@ const ProductList = ({ products, addToCart, isLoading, error }) => {
                       {formatPrice(product.price)} {/* Format the price */}
                     </CardSubtitle>
                     <CardText>Sold by: {product.seller}</CardText>
+                    <Badge color="warning">
+                      <span className="px-1">Rating:</span>
+                      {Array(5)
+                        .fill(0)
+                        .map(
+                          (
+                            _,
+                            i // Generate 5 stars
+                          ) => (
+                            <span
+                              key={i}
+                              style={{
+                                color: i < product.rating ? "gold" : "gray",
+                              }}
+                            >
+                              ★
+                            </span>
+                          )
+                        )}
+                      {/* Display the rating value */}
+                      <span className="ms-2">({product.rating})</span>
+                    </Badge>
 
                     <Link to={`/product/${product.id}`}>
                       <Button>View Details</Button>
