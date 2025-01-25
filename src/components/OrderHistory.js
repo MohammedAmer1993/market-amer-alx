@@ -14,7 +14,9 @@ import {
   Dropdown,
   DropdownToggle,
   DropdownItem,
-  DropdownMenu, // Import Dropdown components
+  DropdownMenu,
+  InputGroup,
+  InputGroupText,
 } from "reactstrap";
 import { Link } from "react-router-dom";
 
@@ -33,6 +35,8 @@ const OrderHistory = ({
   const [returnReasonValid, setReturnReasonValid] = useState(true); // State for return reason validation
   const [dropdownOpen, setDropdownOpen] = useState(false); // State for dropdown
   const [selectedStatus, setSelectedStatus] = useState("All"); // State for selected status
+  const [startDate, setStartDate] = useState(""); // State for start date
+  const [endDate, setEndDate] = useState(""); // State for end date
 
   const dispatch = useDispatch();
 
@@ -66,12 +70,20 @@ const OrderHistory = ({
     setSelectedStatus(status);
   };
 
-  // Filter orders based on selected status
   const filteredOrders = orders.filter((order) => {
+    const orderDate = new Date(order.date); // Convert order date to Date object
+
+    // Check if the order date falls within the selected range
+    const startDateObj = startDate ? new Date(startDate) : null;
+    const endDateObj = endDate ? new Date(endDate) : null;
+    const isDateInRange =
+      (!startDateObj || orderDate >= startDateObj) &&
+      (!endDateObj || orderDate <= endDateObj);
+
     if (selectedStatus === "All") {
-      return true; // Show all orders
+      return isDateInRange; // Show all orders within date range
     } else {
-      return order.status === selectedStatus;
+      return order.status === selectedStatus && isDateInRange;
     }
   });
 
@@ -175,6 +187,24 @@ const OrderHistory = ({
             {/* Add more status options as needed */}
           </DropdownMenu>
         </Dropdown>
+        <div className="mb-3">
+          <InputGroup>
+            <InputGroupText>From:</InputGroupText>
+            <Input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+            />
+          </InputGroup>
+          <InputGroup>
+            <InputGroupText>To:</InputGroupText>
+            <Input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+            />
+          </InputGroup>
+        </div>
       </div>
       {isLoading ? (
         <div className="text-center">
