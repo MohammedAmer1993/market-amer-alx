@@ -85,7 +85,15 @@ const SellerProfile = ({ products, isLoading, error }) => {
               <div className="col-md-4 mb-4" key={product.id}>
                 <Card>
                   <Link to={`/product/${product.id}`}>
-                    <CardImg top src={product.imageUrl} alt={product.name} />
+                    <CardImg
+                      top
+                      src={product.imageUrl}
+                      alt={product.name}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "../../public/img_placeholder.jpg";
+                      }}
+                    />
                     <CardBody>
                       <CardTitle tag="h5">{product.name}</CardTitle>
                       <CardText>${product.price}</CardText>

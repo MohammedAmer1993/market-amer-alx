@@ -28,7 +28,15 @@ const ProductDetails = ({ products, addToCart }) => {
       <div className="row">
         <div className="col-md-6">
           <Card>
-            <CardImg top src={product.imageUrl} alt={product.name} />
+            <CardImg
+              top
+              src={product.imageUrl}
+              alt={product.name}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "../../public/img_placeholder.jpg";
+              }}
+            />
           </Card>
         </div>
         <div className="col-md-6">

@@ -179,15 +179,24 @@ const ProductList = ({ products, addToCart, isLoading, error }) => {
         </div>
       ) : (
         <div className="row">
-          {filteredProducts.map((product) => (
+          {currentProducts.map((product) => (
             <div className="col-md-4 mb-4" key={product.id}>
               <Card>
-                <CardImg
-                  top
-                  width="100%"
-                  src={product.imageUrl}
-                  alt={product.name}
-                />
+                <Link to={`/product/${product.id}`}>
+                  {" "}
+                  {/* Wrap the card image with Link */}
+                  <CardImg
+                    top
+                    width="100%"
+                    src={product.imageUrl}
+                    alt={product.name}
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = "../../public/img_placeholder.jpg";
+                    }} // Add onError handler
+                  />
+                </Link>
+
                 <CardBody>
                   <CardTitle tag="h5">{product.name}</CardTitle>
                   <CardSubtitle className="mb-2 text-muted" tag="h6">
