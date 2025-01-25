@@ -11,6 +11,10 @@ import {
   Alert,
   Input,
   FormFeedback,
+  Dropdown,
+  DropdownToggle,
+  DropdownItem,
+  DropdownMenu, // Import Dropdown components
 } from "reactstrap";
 import { Link } from "react-router-dom";
 
@@ -27,6 +31,8 @@ const OrderHistory = ({
   const [cancellingOrderId, setCancellingOrderId] = useState(null); // State for cancelling order
   const [returnReason, setReturnReason] = useState(""); // State for return reason
   const [returnReasonValid, setReturnReasonValid] = useState(true); // State for return reason validation
+  const [dropdownOpen, setDropdownOpen] = useState(false); // State for dropdown
+  const [selectedStatus, setSelectedStatus] = useState("All"); // State for selected status
 
   const dispatch = useDispatch();
 
@@ -53,6 +59,21 @@ const OrderHistory = ({
       dispatch({ type: "CLEAR_TRACKING_ERROR" }); // New action to clear tracking errors
     };
   }, [dispatch, currentUser]); // Run effect when currentUser or dispatch changes
+
+  const toggleDropdown = () => setDropdownOpen((prevState) => !prevState);
+
+  const handleStatusChange = (status) => {
+    setSelectedStatus(status);
+  };
+
+  // Filter orders based on selected status
+  const filteredOrders = orders.filter((order) => {
+    if (selectedStatus === "All") {
+      return true; // Show all orders
+    } else {
+      return order.status === selectedStatus;
+    }
+  });
 
   const handleTrackOrder = async (orderId) => {
     setTrackingOrder(true); // Set trackingOrder to true
@@ -132,6 +153,29 @@ const OrderHistory = ({
   return (
     <div className="container">
       <h2>Order History</h2>
+      <div className="mb-3">
+        <Dropdown isOpen={dropdownOpen} toggle={toggleDropdown}>
+          <DropdownToggle caret>{selectedStatus}</DropdownToggle>
+          <DropdownMenu>
+            <DropdownItem onClick={() => handleStatusChange("All")}>
+              All
+            </DropdownItem>
+            <DropdownItem onClick={() => handleStatusChange("In progress")}>
+              In progress
+            </DropdownItem>
+            <DropdownItem onClick={() => handleStatusChange("Delivered")}>
+              Delivered
+            </DropdownItem>
+            <DropdownItem onClick={() => handleStatusChange("Cancelled")}>
+              Cancelled
+            </DropdownItem>
+            <DropdownItem onClick={() => handleStatusChange("Returned")}>
+              Returned
+            </DropdownItem>
+            {/* Add more status options as needed */}
+          </DropdownMenu>
+        </Dropdown>
+      </div>
       {isLoading ? (
         <div className="text-center">
           <Spinner color="primary" />
@@ -153,7 +197,7 @@ const OrderHistory = ({
             </tr>
           </thead>
           <tbody>
-            {orders.map((order) => (
+            {filteredOrders.map((order) => (
               <tr key={order.id}>
                 <td>{order.id}</td>
                 <td>{order.date.toDateString()}</td>
