@@ -56,6 +56,15 @@ const OrderHistory = ({
     }).format(price);
   };
 
+  // Function to format date
+  const formatDate = (date) => {
+    return new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }).format(new Date(date));
+  };
+
   useEffect(() => {
     const fetchOrderHistory = async () => {
       dispatch({ type: "FETCH_ORDER_HISTORY_REQUEST" });
@@ -247,7 +256,7 @@ const OrderHistory = ({
                 {/* Use Fragment to wrap multiple elements */}
                 <tr>
                   <td>{order.id}</td>
-                  <td>{order.date.toDateString()}</td>
+                  <td>{formatDate(order.date)}</td> {/* Format the date */}
                   <td>
                     <ul>
                       {order.items.map((item) => (
@@ -365,7 +374,10 @@ const OrderHistory = ({
               <p>Order ID: {trackingInfo.orderId}</p>
               {/* Display other tracking details */}
               <p>Status: {trackingInfo.status}</p>
-              <p>Estimated Delivery: {trackingInfo.estimatedDelivery}</p>
+              <p>
+                Estimated Delivery: {formatDate(trackingInfo.estimatedDelivery)}
+              </p>{" "}
+              {/* Format the date */}
               <h4>User Details:</h4>
               <p>Name: {trackingInfo.user.name}</p>{" "}
               <p>Email: {trackingInfo.user.email}</p>{" "}
