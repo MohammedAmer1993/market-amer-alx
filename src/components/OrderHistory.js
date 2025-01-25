@@ -117,7 +117,17 @@ const OrderHistory = ({
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
       // In a real app, fetch tracking information from your backend API
       const trackingInfo = {
-        // ... tracking details ...
+        orderId: 123, // The ID of the order being tracked
+        status: "Shipped", // Current status of the order (e.g., 'Pending', 'Shipped', 'Delivered')
+        estimatedDelivery: "2024-03-15", // Estimated delivery date (could be a Date object or a string)
+        trackingUrl: "https://example-courier.com/tracking/1234567890", // URL to track the order on the courier's website
+        user: {
+          // Information about the user who placed the order
+          name: "John Doe",
+          email: "john.doe@example.com",
+          // You can add more user details here if needed (e.g., address, phone number)
+        },
+        // You can add more tracking-specific details if needed (e.g., current location, tracking events)
       };
 
       // Simulate an error if orderId is 2 (for demonstration)
