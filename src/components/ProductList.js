@@ -40,6 +40,14 @@ const ProductList = ({ products, addToCart, isLoading, error }) => {
     indexOfLastProduct
   );
 
+  // Function to format price with currency symbol
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(price);
+  };
+
   // Get unique categories from products
   const categories = [
     "All Categories",
@@ -183,7 +191,7 @@ const ProductList = ({ products, addToCart, isLoading, error }) => {
                 <CardBody>
                   <CardTitle tag="h5">{product.name}</CardTitle>
                   <CardSubtitle className="mb-2 text-muted" tag="h6">
-                    ${product.price}
+                    {formatPrice(product.price)} {/* Format the price */}
                   </CardSubtitle>
                   <Link to={`/product/${product.id}`}>
                     <Button>View Details</Button>
