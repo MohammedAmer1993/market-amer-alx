@@ -261,8 +261,23 @@ const OrderHistory = ({
                     <ul>
                       {order.items.map((item) => (
                         <li key={item.id}>
-                          <Link to={`/product/${item.id}`}>{item.name}</Link> x{" "}
-                          {item.quantity}
+                          <Link to={`/product/${item.id}`}>
+                            <img
+                              src={item.imageUrl}
+                              alt={item.name}
+                              style={{
+                                width: "50px",
+                                height: "50px",
+                                objectFit: "cover",
+                              }} // Add inline styles
+                              onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = "path/to/placeholder-image.jpg";
+                              }} // Add onError handler
+                            />
+                            {item.name}
+                          </Link>{" "}
+                          x {item.quantity}
                         </li>
                       ))}
                     </ul>

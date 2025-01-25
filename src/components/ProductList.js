@@ -4,6 +4,7 @@ import {
   Card,
   CardImg,
   CardBody,
+  CardText,
   CardTitle,
   CardSubtitle,
   Button,
@@ -27,11 +28,17 @@ const ProductList = ({ products, addToCart, isLoading, error }) => {
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [addingToCart, setAddingToCart] = useState(null); // State for adding to cart
   const [currentPage, setCurrentPage] = useState(1); // State for current page
+  const [expandedProductId, setExpandedProductId] = useState(null);
 
   const dispatch = useDispatch(); // Call useDispatch
 
   const productsPerPage = 6; // Number of products to display per page
 
+  const toggleProductDetails = (productId) => {
+    setExpandedProductId((prevProductId) =>
+      prevProductId === productId ? null : productId
+    );
+  };
   // Logic for pagination
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
@@ -180,41 +187,62 @@ const ProductList = ({ products, addToCart, isLoading, error }) => {
       ) : (
         <div className="row">
           {currentProducts.map((product) => (
-            <div className="col-md-4 mb-4" key={product.id}>
-              <Card>
-                <Link to={`/product/${product.id}`}>
-                  {" "}
-                  {/* Wrap the card image with Link */}
-                  <CardImg
-                    top
-                    width="100%"
-                    src={product.imageUrl}
-                    alt={product.name}
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = "../../public/img_placeholder.jpg";
-                    }} // Add onError handler
-                  />
-                </Link>
-
-                <CardBody>
-                  <CardTitle tag="h5">{product.name}</CardTitle>
-                  <CardSubtitle className="mb-2 text-muted" tag="h6">
-                    {formatPrice(product.price)} {/* Format the price */}
-                  </CardSubtitle>
+            <React.Fragment key={product.id}>
+              {" "}
+              {/* Use Fragment to wrap multiple elements */}
+              <div className="col-md-4 mb-4">
+                <Card>
                   <Link to={`/product/${product.id}`}>
-                    <Button>View Details</Button>
+                    {" "}
+                    {/* Wrap the card image with Link */}
+                    <CardImg
+                      top
+                      width="100%"
+                      src={product.imageUrl}
+                      alt={product.name}
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = require("../assets/img/img_placeholder.jpg");
+                      }} // Add onError handler
+                    />
                   </Link>
-                  {isLoading || addingToCart === product.id ? ( // Show spinner while adding to cart
-                    <Spinner size="sm" color="primary" />
-                  ) : (
-                    <Button onClick={() => handleAddToCart(product)}>
-                      Add to Cart
+
+                  <CardBody>
+                    <CardTitle tag="h5">{product.name}</CardTitle>
+                    <CardSubtitle className="mb-2 text-muted" tag="h6">
+                      {formatPrice(product.price)} {/* Format the price */}
+                    </CardSubtitle>
+                    <CardText>Sold by: {product.seller}</CardText>
+
+                    <Link to={`/product/${product.id}`}>
+                      <Button>View Details</Button>
+                    </Link>
+                    <Button onClick={() => toggleProductDetails(product.id)}>
+                      {expandedProductId === product.id
+                        ? "Hide Details"
+                        : "Show Details"}
                     </Button>
-                  )}
-                </CardBody>
-              </Card>
-            </div>
+                    {isLoading || addingToCart === product.id ? ( // Show spinner while adding to cart
+                      <Spinner size="sm" color="primary" />
+                    ) : (
+                      <Button onClick={() => handleAddToCart(product)}>
+                        Add to Cart
+                      </Button>
+                    )}
+                  </CardBody>
+                </Card>
+              </div>
+              {expandedProductId === product.id && (
+                <div className="col-md-12 mb-4">
+                  {" "}
+                  {/* Use a full-width div for details */}
+                  {/* Display detailed product information here */}
+                  <h4>{product.name}</h4>
+                  <p>{product.description}</p>
+                  {/* ... other product details ... */}
+                </div>
+              )}
+            </React.Fragment>
           ))}
         </div>
       )}

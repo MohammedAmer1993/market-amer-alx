@@ -91,7 +91,7 @@ const SellerProfile = ({ products, isLoading, error }) => {
                       alt={product.name}
                       onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src = "../../public/img_placeholder.jpg";
+                        e.target.src = require("../assets/img/img_placeholder.jpg");
                       }}
                     />
                     <CardBody>
