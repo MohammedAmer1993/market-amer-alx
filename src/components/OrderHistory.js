@@ -37,10 +37,17 @@ const OrderHistory = ({
   const [selectedStatus, setSelectedStatus] = useState("All"); // State for selected status
   const [startDate, setStartDate] = useState(""); // State for start date
   const [endDate, setEndDate] = useState(""); // State for end date
+  const [expandedOrderId, setExpandedOrderId] = useState(null);
 
   const dispatch = useDispatch();
 
   const toggleModal = () => setModalOpen(!modalOpen);
+
+  const toggleOrderDetails = (orderId) => {
+    setExpandedOrderId((prevOrderId) =>
+      prevOrderId === orderId ? null : orderId
+    );
+  };
 
   useEffect(() => {
     const fetchOrderHistory = async () => {
@@ -228,79 +235,112 @@ const OrderHistory = ({
           </thead>
           <tbody>
             {filteredOrders.map((order) => (
-              <tr key={order.id}>
-                <td>{order.id}</td>
-                <td>{order.date.toDateString()}</td>
-                <td>
-                  <ul>
-                    {order.items.map((item) => (
-                      <li key={item.id}>
-                        <Link to={`/product/${item.id}`}>{item.name}</Link> x{" "}
-                        {item.quantity}
-                      </li>
-                    ))}
-                  </ul>
-                </td>
-                <td>${order.total}</td>
-                <td>
-                  {order.date.getTime() > Date.now() - 86400000
-                    ? "In progress"
-                    : "Delivered"}
-                </td>
-                <td>
-                  <Button onClick={() => handleTrackOrder(order.id)}>
-                    Track Order
-                  </Button>
-                  {order.status !== "Cancelled" && ( // Only show Cancel button if order is not cancelled
-                    <>
-                      {isLoading || cancellingOrderId === order.id ? ( // Show spinner while cancelling
-                        <Spinner size="sm" color="danger" />
-                      ) : (
-                        <Button
-                          color="danger"
-                          size="sm"
-                          onClick={() => handleCancelOrder(order.id)}
-                        >
-                          Cancel Order
-                        </Button>
-                      )}
-                    </>
-                  )}
-                  {order.status !== "Cancelled" &&
-                    order.status !== "Returned" && ( // Show Return button if order is not cancelled or returned
+              <React.Fragment key={order.id}>
+                {" "}
+                {/* Use Fragment to wrap multiple elements */}
+                <tr>
+                  <td>{order.id}</td>
+                  <td>{order.date.toDateString()}</td>
+                  <td>
+                    <ul>
+                      {order.items.map((item) => (
+                        <li key={item.id}>
+                          <Link to={`/product/${item.id}`}>{item.name}</Link> x{" "}
+                          {item.quantity}
+                        </li>
+                      ))}
+                    </ul>
+                  </td>
+                  <td>${order.total}</td>
+                  <td>
+                    {order.date.getTime() > Date.now() - 86400000
+                      ? "In progress"
+                      : "Delivered"}
+                  </td>
+                  <td>
+                    <Button onClick={() => handleTrackOrder(order.id)}>
+                      Track Order
+                    </Button>
+                    {order.status !== "Cancelled" && ( // Only show Cancel button if order is not cancelled
                       <>
-                        {isLoading ? ( // Show spinner while returning
-                          <Spinner size="sm" color="warning" />
+                        {isLoading || cancellingOrderId === order.id ? ( // Show spinner while cancelling
+                          <Spinner size="sm" color="danger" />
                         ) : (
-                          <>
-                            <Button
-                              color="warning"
-                              size="sm"
-                              onClick={() => handleReturnOrder(order.id)}
-                            >
-                              Return Order
-                            </Button>
-                            {/* Input for return reason */}
-                            <Input
-                              type="text"
-                              placeholder="Reason for return"
-                              value={returnReason}
-                              onChange={(e) => setReturnReason(e.target.value)}
-                              valid={returnReasonValid} // Add valid prop
-                              invalid={!returnReasonValid} // Add invalid prop
-                            />
-                            {!returnReasonValid && (
-                              <FormFeedback>
-                                Please provide a reason for return
-                              </FormFeedback>
-                            )}{" "}
-                            {/* Show feedback */}
-                          </>
+                          <Button
+                            color="danger"
+                            size="sm"
+                            onClick={() => handleCancelOrder(order.id)}
+                          >
+                            Cancel Order
+                          </Button>
                         )}
                       </>
                     )}
-                </td>
-              </tr>
+                    {order.status !== "Cancelled" &&
+                      order.status !== "Returned" && ( // Show Return button if order is not cancelled or returned
+                        <>
+                          {isLoading ? ( // Show spinner while returning
+                            <Spinner size="sm" color="warning" />
+                          ) : (
+                            <>
+                              <Button
+                                color="warning"
+                                size="sm"
+                                onClick={() => handleReturnOrder(order.id)}
+                              >
+                                Return Order
+                              </Button>
+                              {/* Input for return reason */}
+                              <Input
+                                type="text"
+                                placeholder="Reason for return"
+                                value={returnReason}
+                                onChange={(e) =>
+                                  setReturnReason(e.target.value)
+                                }
+                                valid={returnReasonValid} // Add valid prop
+                                invalid={!returnReasonValid} // Add invalid prop
+                              />
+                              {!returnReasonValid && (
+                                <FormFeedback>
+                                  Please provide a reason for return
+                                </FormFeedback>
+                              )}{" "}
+                              {/* Show feedback */}
+                            </>
+                          )}
+                        </>
+                      )}
+                    <Button onClick={() => toggleOrderDetails(order.id)}>
+                      {expandedOrderId === order.id
+                        ? "Hide Details"
+                        : "Show Details"}
+                    </Button>
+                  </td>
+                </tr>
+                {/* Conditionally render order details */}
+                {expandedOrderId === order.id && (
+                  <tr>
+                    <td colSpan="6">
+                      {" "}
+                      {/* Span across all columns */}
+                      {/* Display detailed order information here */}
+                      <h4>Order Details</h4>
+                      <p>Order ID: {order.id}</p>
+                      {/* ... other order details like shipping address, payment method, etc. */}
+                      <h5>Items:</h5>
+                      <ul>
+                        {order.items.map((item) => (
+                          <li key={item.id}>
+                            <Link to={`/product/${item.id}`}>{item.name}</Link>{" "}
+                            x {item.quantity} - ${item.price}
+                          </li>
+                        ))}
+                      </ul>
+                    </td>
+                  </tr>
+                )}
+              </React.Fragment>
             ))}
           </tbody>
         </Table>
