@@ -19,6 +19,14 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading, error }) => {
     return total;
   };
 
+  // Function to format price with currency symbol
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(price);
+  };
+
   const handlePlaceOrder = async () => {
     // Make handlePlaceOrder async
     dispatch({ type: "PLACE_ORDER_REQUEST" }); // Dispatch request action
@@ -83,7 +91,7 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading, error }) => {
               {cart.map((item) => (
                 <tr key={item.id}>
                   <td>{item.name}</td>
-                  <td>${item.price}</td>
+                  <td>{formatPrice(item.price)}</td> {/* Format the price */}
                   <td>1</td> {/* For now, we'll assume quantity is 1 */}
                   <td>
                     {isLoading || placingOrder ? ( // Show spinner while placing order

@@ -48,6 +48,13 @@ const OrderHistory = ({
       prevOrderId === orderId ? null : orderId
     );
   };
+  // Function to format price with currency symbol
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(price);
+  };
 
   useEffect(() => {
     const fetchOrderHistory = async () => {
@@ -251,7 +258,8 @@ const OrderHistory = ({
                       ))}
                     </ul>
                   </td>
-                  <td>${order.total}</td>
+                  <td>{formatPrice(order.total)}</td>{" "}
+                  {/* Format the total price */}
                   <td>
                     {order.date.getTime() > Date.now() - 86400000
                       ? "In progress"

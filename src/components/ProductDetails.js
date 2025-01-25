@@ -88,6 +88,15 @@ const ProductDetails = ({ products, addToCart, isLoading, error }) => {
     .slice(0, 3);
 
   const toggleModal = () => setModalOpen(!modalOpen);
+
+  // Function to format price with currency symbol
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: "USD",
+    }).format(price);
+  };
+
   useEffect(() => {
     const fetchProductDetails = async () => {
       dispatch({ type: "FETCH_PRODUCT_DETAILS_REQUEST" });
@@ -131,7 +140,8 @@ const ProductDetails = ({ products, addToCart, isLoading, error }) => {
             <CardBody>
               <CardTitle tag="h5">{product.name}</CardTitle>
               <CardText>
-                <p>Price: ${product.price}</p>
+                <p>Price: {formatPrice(product.price)}</p>{" "}
+                {/* Format the price */}
                 <p>
                   Seller:{" "}
                   <Link to={`/seller/${product.seller}`}>{product.seller}</Link>
