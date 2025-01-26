@@ -28,11 +28,11 @@ const ProductList = ({ products, addToCart, isLoading, error }) => {
   const [filteredProducts, setFilteredProducts] = useState(products);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
-  const [addingToCart, setAddingToCart] = useState(null); // State for adding to cart
-  const [currentPage, setCurrentPage] = useState(1); // State for current page
+  const [addingToCart, setAddingToCart] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const [expandedProductId, setExpandedProductId] = useState(null);
 
-  const dispatch = useDispatch(); // Call useDispatch
+  const dispatch = useDispatch();
 
   const productsPerPage = 6; // Number of products to display per page
 
@@ -93,7 +93,7 @@ const ProductList = ({ products, addToCart, isLoading, error }) => {
 
     fetchProducts();
     return () => {
-      dispatch({ type: "CLEAR_PRODUCT_LIST_ERROR" }); // Dispatch a new action to clear product list errors
+      dispatch({ type: "CLEAR_PRODUCT_LIST_ERROR" });
     };
   }, [dispatch]); // Run effect only once when the component mounts
 
@@ -117,30 +117,27 @@ const ProductList = ({ products, addToCart, isLoading, error }) => {
       case "priceDesc":
         sortedProducts.sort((a, b) => b.price - a.price);
         break;
-      // Add more sorting cases as needed
       default:
-        break; // Do nothing for default sorting
+        break;
     }
 
-    setFilteredProducts(sortedProducts); // Update filteredProducts state
+    setFilteredProducts(sortedProducts);
   };
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handleAddToCart = async (product) => {
-    // Make handleAddToCart async
-    setAddingToCart(product.id); // Set addingToCart to the product ID
+    setAddingToCart(product.id);
 
     dispatch({ type: "ADD_TO_CART_REQUEST" });
     try {
       await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate API call delay
-      // In a real app, send the product data to your backend API to add to cart
       dispatch({ type: "ADD_TO_CART_SUCCESS", payload: product });
-      addToCart(product); // This might be redundant if you update the cart in the reducer
+      addToCart(product);
     } catch (error) {
       dispatch({ type: "ADD_TO_CART_FAILURE", payload: error.message });
     } finally {
-      setAddingToCart(null); // Reset addingToCart in finally block
+      setAddingToCart(null);
     }
   };
 
@@ -179,7 +176,6 @@ const ProductList = ({ products, addToCart, isLoading, error }) => {
           <option value="default">Default</option>
           <option value="priceAsc">Price (Low to High)</option>
           <option value="priceDesc">Price (High to Low)</option>
-          {/* Add more sorting options as needed */}
         </select>
       </div>
       {isLoading ? ( // Show spinner if isLoading is true
@@ -191,12 +187,10 @@ const ProductList = ({ products, addToCart, isLoading, error }) => {
           {currentProducts.map((product) => (
             <React.Fragment key={product.id}>
               {" "}
-              {/* Use Fragment to wrap multiple elements */}
               <div className="col-md-4 mb-4">
                 <Card>
                   <Link to={`/product/${product.id}`}>
                     {" "}
-                    {/* Wrap the card image with Link */}
                     <CardImg
                       top
                       width="100%"
@@ -205,7 +199,7 @@ const ProductList = ({ products, addToCart, isLoading, error }) => {
                       onError={(e) => {
                         e.target.onerror = null;
                         e.target.src = require("../assets/img/img_placeholder.jpg");
-                      }} // Add onError handler
+                      }}
                     />
                   </Link>
 
@@ -258,12 +252,8 @@ const ProductList = ({ products, addToCart, isLoading, error }) => {
               </div>
               {expandedProductId === product.id && (
                 <div className="col-md-12 mb-4">
-                  {" "}
-                  {/* Use a full-width div for details */}
-                  {/* Display detailed product information here */}
                   <h4>{product.name}</h4>
                   <p>{product.description}</p>
-                  {/* ... other product details ... */}
                 </div>
               )}
             </React.Fragment>
@@ -282,7 +272,6 @@ const ProductList = ({ products, addToCart, isLoading, error }) => {
         ))}
       </Pagination>
       {error && <Alert color="danger">{error}</Alert>}{" "}
-      {/* Display error message */}
     </div>
   );
 };
@@ -290,7 +279,7 @@ const ProductList = ({ products, addToCart, isLoading, error }) => {
 const mapStateToProps = (state) => ({
   products: state.product.products,
   isLoading: state.product.isLoading,
-  error: state.product.error, // Get error from productReducer
+  error: state.product.error,
 });
 
 const mapDispatchToProps = (dispatch) => ({

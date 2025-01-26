@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"; // Import useEffect
+import React, { useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { connect, useDispatch } from "react-redux";
 import {
@@ -26,7 +26,6 @@ const SellerProfile = ({ products, isLoading, error }) => {
       dispatch({ type: "FETCH_SELLER_PROFILE_REQUEST" });
       try {
         await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
-        // In a real app, fetch seller details and products from your API based on sellerName
         const sellerProducts = products.filter((p) => p.seller === sellerName);
         dispatch({
           type: "FETCH_SELLER_PROFILE_SUCCESS",
@@ -44,7 +43,7 @@ const SellerProfile = ({ products, isLoading, error }) => {
 
     fetchSellerProfile();
     return () => {
-      dispatch({ type: "CLEAR_SELLER_PROFILE_ERROR" }); // Dispatch a new action to clear seller profile errors
+      dispatch({ type: "CLEAR_SELLER_PROFILE_ERROR" });
     };
   }, [dispatch, sellerName, products]);
 
@@ -62,11 +61,9 @@ const SellerProfile = ({ products, isLoading, error }) => {
   return (
     <div className="container">
       {error && <Alert color="danger">{error}</Alert>}{" "}
-      {/* Display error message */}
       <Row>
         <Col md="3">
           {" "}
-          {/* Sidebar for seller list */}
           <h3>Seller List</h3>
           <ul>
             {sellers.map((seller) => (
@@ -78,7 +75,6 @@ const SellerProfile = ({ products, isLoading, error }) => {
         </Col>
         <Col md="9">
           {" "}
-          {/* Main content area */}
           <h2>{sellerName}'s Profile</h2>
           <div className="row">
             {sellerProducts.map((product) => (
@@ -111,8 +107,8 @@ const SellerProfile = ({ products, isLoading, error }) => {
 
 const mapStateToProps = (state) => ({
   products: state.product.products,
-  isLoading: state.product.isLoading, // Get isLoading from Redux store
-  error: state.product.error, // Get error from productReducer
+  isLoading: state.product.isLoading,
+  error: state.product.error,
 });
 
 export default connect(mapStateToProps)(SellerProfile);

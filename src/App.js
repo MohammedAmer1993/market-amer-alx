@@ -8,8 +8,6 @@ function App({ isAuthenticated, logout }) {
   return (
     <Router>
       <Layout isAuthenticated={isAuthenticated} logout={logout}>
-        {" "}
-        {/* Wrap routes with Layout */}
         <AppRoutes isAuthenticated={isAuthenticated} />
       </Layout>
     </Router>
@@ -17,11 +15,10 @@ function App({ isAuthenticated, logout }) {
 }
 
 const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated, // We'll add authReducer later
+  isAuthenticated: state.auth.isAuthenticated,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  // ...
   logout: () => dispatch({ type: "LOGOUT" }), // Dispatch logout action
 });
 

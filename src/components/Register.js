@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"; // Import useEffect
+import React, { useState, useEffect } from "react";
 import {
   Form,
   FormGroup,
@@ -28,10 +28,8 @@ const Register = ({ isLoading, error }) => {
   }, [dispatch]);
 
   const handleRegister = async (e) => {
-    // Make handleRegister async
     e.preventDefault();
 
-    // Basic validation (you can add more complex validation as needed)
     const isUsernameValid = username.trim() !== "";
     const isPasswordValid = password.trim() !== "";
     setUsernameValid(isUsernameValid);
@@ -43,7 +41,6 @@ const Register = ({ isLoading, error }) => {
     dispatch({ type: "REGISTER_REQUEST" });
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
-      // In a real app, send registration data to your backend API
       console.log("New user registered:", { username, password });
       dispatch({ type: "REGISTER_SUCCESS" });
       navigate("/login");
@@ -69,13 +66,12 @@ const Register = ({ isLoading, error }) => {
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              valid={usernameValid} // Add valid prop
-              invalid={!usernameValid} // Add invalid prop
+              valid={usernameValid}
+              invalid={!usernameValid}
             />
             {!usernameValid && (
               <FormFeedback>Please enter a username</FormFeedback>
             )}{" "}
-            {/* Show feedback */}
           </FormGroup>
           <FormGroup>
             <Label for="password">Password</Label>
@@ -85,16 +81,14 @@ const Register = ({ isLoading, error }) => {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              valid={passwordValid} // Add valid prop
-              invalid={!passwordValid} // Add invalid prop
+              valid={passwordValid}
+              invalid={!passwordValid}
             />
             {!passwordValid && (
               <FormFeedback>Please enter a password</FormFeedback>
             )}{" "}
-            {/* Show feedback */}
           </FormGroup>{" "}
           {error && <Alert color="danger">{error}</Alert>}{" "}
-          {/* Display error message */}
           <Button type="submit">Register</Button>
         </Form>
       )}
@@ -103,8 +97,8 @@ const Register = ({ isLoading, error }) => {
 };
 
 const mapStateToProps = (state) => ({
-  isLoading: state.auth.isLoading, // Get isLoading from authReducer
-  error: state.auth.error, // Get error from authReducer
+  isLoading: state.auth.isLoading,
+  error: state.auth.error,
 });
 
 export default connect(mapStateToProps, null)(Register);

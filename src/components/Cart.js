@@ -7,17 +7,19 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading, error }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [promoCode, setPromoCode] = useState("");
-  const [placingOrder, setPlacingOrder] = useState(false);
-  const [removingItemId, setRemovingItemId] = useState(null);
+  const [placingOrder, setPlacingOrder] = useState(false); // State for placing order
+  const [removingItemId, setRemovingItemId] = useState(null); // State for removing item
 
   const calculateTotal = () => {
     let total = cart.reduce((total, item) => total + item.price, 0);
+    // Apply promo code logic here (e.g., if promoCode === 'DISCOUNT10', apply 10% discount)
     if (promoCode === "DISCOUNT10") {
-      total *= 0.9;
+      total *= 0.9; // Apply 10% discount
     }
     return total;
   };
 
+  // Function to format price with currency symbol
   const formatPrice = (price) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -26,11 +28,11 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading, error }) => {
   };
 
   const handlePlaceOrder = async () => {
-    dispatch({ type: "PLACE_ORDER_REQUEST" });
-    setPlacingOrder(true);
+    dispatch({ type: "PLACE_ORDER_REQUEST" }); // Dispatch request action
+    setPlacingOrder(true); // Set placingOrder to true
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
       const order = {};
       dispatch({ type: "PLACE_ORDER_SUCCESS", payload: order });
       navigate("/order-history");
@@ -42,11 +44,12 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading, error }) => {
   };
 
   const handleRemoveFromCart = async (productId) => {
-    setRemovingItemId(productId);
-    dispatch({ type: "REMOVE_FROM_CART_REQUEST" });
+    // Make handleRemoveFromCart async
+    setRemovingItemId(productId); // Set removingItemId to the product ID
 
+    dispatch({ type: "REMOVE_FROM_CART_REQUEST" });
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate API call delay
       dispatch({ type: "REMOVE_FROM_CART_SUCCESS", payload: productId });
       removeFromCart(productId);
     } catch (error) {
@@ -57,20 +60,21 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading, error }) => {
   };
 
   useEffect(() => {
+    // Clear the error message when the component unmounts
     return () => {
       dispatch({ type: "CLEAR_CART_ERROR" });
     };
   }, [dispatch]);
 
   return (
-    <div className="container mt-5">
-      <h2 className="text-center mb-4">Shopping Cart</h2>
+    <div className="container">
+      <h2>Shopping Cart</h2>
       {cart.length === 0 ? (
-        <p className="text-center text-muted">Your cart is empty.</p>
+        <p>Your cart is empty.</p>
       ) : (
         <div>
-          <Table bordered hover responsive className="mb-4">
-            <thead className="table-light">
+          <Table>
+            <thead>
               <tr>
                 <th>Product</th>
                 <th>Price</th>
@@ -86,23 +90,18 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading, error }) => {
                   <td>1</td>
                   <td>
                     {isLoading || placingOrder ? (
-                      <Spinner color="primary" size="sm" />
+                      <Spinner color="primary" />
                     ) : (
-                      <Button
-                        color="success"
-                        size="sm"
-                        onClick={handlePlaceOrder}
-                      >
+                      <Button color="primary" onClick={handlePlaceOrder}>
                         Place Order
                       </Button>
                     )}
                     {isLoading || removingItemId === item.id ? (
-                      <Spinner size="sm" color="danger" className="ms-2" />
+                      <Spinner size="sm" color="danger" />
                     ) : (
                       <Button
                         color="danger"
                         size="sm"
-                        className="ms-2"
                         onClick={() => handleRemoveFromCart(item.id)}
                       >
                         Remove
@@ -113,21 +112,19 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading, error }) => {
               ))}
             </tbody>
           </Table>
-
-          <div className="d-flex justify-content-between align-items-center mb-3">
+          {/* Promo Code Input */}
+          <div className="mb-3">
             <Input
               type="text"
               placeholder="Enter promo code"
               value={promoCode}
               onChange={(e) => setPromoCode(e.target.value)}
-              className="w-50 me-2"
             />
-            <p className="fw-bold mb-0">
-              Total: {formatPrice(calculateTotal())}
-            </p>
           </div>
-
-          {error && <Alert color="danger">{error}</Alert>}
+          {/* Display error message */}
+          {error && <Alert color="danger">{error}</Alert>}{" "}
+          {/* Display total with 2 decimal places */}
+          <p>Total: ${calculateTotal().toFixed(2)}</p>{" "}
         </div>
       )}
     </div>
@@ -136,8 +133,8 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading, error }) => {
 
 const mapStateToProps = (state) => ({
   cart: state.product.cart,
-  isLoading: state.product.isLoading,
-  error: state.product.error,
+  isLoading: state.product.isLoading, // Get isLoading from Redux store
+  error: state.product.error, // Get error from productReducer
 });
 
 const mapDispatchToProps = (dispatch) => ({

@@ -27,16 +27,16 @@ const OrderHistory = ({
   error,
   trackingError,
 }) => {
-  const [modalOpen, setModalOpen] = useState(false); // State for modal visibility
-  const [trackingInfo, setTrackingInfo] = useState(null); // State to store tracking info
-  const [trackingOrder, setTrackingOrder] = useState(false); // State for tracking order
-  const [cancellingOrderId, setCancellingOrderId] = useState(null); // State for cancelling order
-  const [returnReason, setReturnReason] = useState(""); // State for return reason
-  const [returnReasonValid, setReturnReasonValid] = useState(true); // State for return reason validation
-  const [dropdownOpen, setDropdownOpen] = useState(false); // State for dropdown
-  const [selectedStatus, setSelectedStatus] = useState("All"); // State for selected status
-  const [startDate, setStartDate] = useState(""); // State for start date
-  const [endDate, setEndDate] = useState(""); // State for end date
+  const [modalOpen, setModalOpen] = useState(false);
+  const [trackingInfo, setTrackingInfo] = useState(null);
+  const [trackingOrder, setTrackingOrder] = useState(false);
+  const [cancellingOrderId, setCancellingOrderId] = useState(null);
+  const [returnReason, setReturnReason] = useState("");
+  const [returnReasonValid, setReturnReasonValid] = useState(true);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [selectedStatus, setSelectedStatus] = useState("All");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
   const [expandedOrderId, setExpandedOrderId] = useState(null);
 
   const dispatch = useDispatch();
@@ -70,7 +70,6 @@ const OrderHistory = ({
       dispatch({ type: "FETCH_ORDER_HISTORY_REQUEST" });
       try {
         await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
-        // In a real app, fetch order history from your API based on currentUser
         dispatch({ type: "FETCH_ORDER_HISTORY_SUCCESS", payload: orders });
       } catch (error) {
         dispatch({
@@ -82,8 +81,8 @@ const OrderHistory = ({
 
     fetchOrderHistory();
     return () => {
-      dispatch({ type: "CLEAR_ORDER_HISTORY_ERROR" }); // New action to clear order history errors
-      dispatch({ type: "CLEAR_TRACKING_ERROR" }); // New action to clear tracking errors
+      dispatch({ type: "CLEAR_ORDER_HISTORY_ERROR" });
+      dispatch({ type: "CLEAR_TRACKING_ERROR" });
     };
   }, [dispatch, currentUser]); // Run effect when currentUser or dispatch changes
 
@@ -96,7 +95,6 @@ const OrderHistory = ({
   const filteredOrders = orders.filter((order) => {
     const orderDate = new Date(order.date); // Convert order date to Date object
 
-    // Check if the order date falls within the selected range
     const startDateObj = startDate ? new Date(startDate) : null;
     const endDateObj = endDate ? new Date(endDate) : null;
     const isDateInRange =
@@ -111,26 +109,21 @@ const OrderHistory = ({
   });
 
   const handleTrackOrder = async (orderId) => {
-    setTrackingOrder(true); // Set trackingOrder to true
+    setTrackingOrder(true);
     dispatch({ type: "TRACK_ORDER_REQUEST" });
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
-      // In a real app, fetch tracking information from your backend API
       const trackingInfo = {
-        orderId: 123, // The ID of the order being tracked
-        status: "Shipped", // Current status of the order (e.g., 'Pending', 'Shipped', 'Delivered')
-        estimatedDelivery: "2024-03-15", // Estimated delivery date (could be a Date object or a string)
-        trackingUrl: "https://example-courier.com/tracking/1234567890", // URL to track the order on the courier's website
+        orderId: 123,
+        status: "Shipped",
+        estimatedDelivery: "2024-03-15",
+        trackingUrl: "https://example-courier.com/tracking/1234567890",
         user: {
-          // Information about the user who placed the order
           name: "John Doe",
           email: "john.doe@example.com",
-          // You can add more user details here if needed (e.g., address, phone number)
         },
-        // You can add more tracking-specific details if needed (e.g., current location, tracking events)
       };
 
-      // Simulate an error if orderId is 2 (for demonstration)
       if (orderId === 2) {
         throw new Error("Failed to fetch tracking information");
       }
@@ -140,26 +133,21 @@ const OrderHistory = ({
       toggleModal();
     } catch (error) {
       dispatch({ type: "TRACK_ORDER_FAILURE", payload: error.message });
-      // You can display the error message in the modal or use another approach
     } finally {
-      setTrackingOrder(false); // Set trackingOrder to false in finally block
+      setTrackingOrder(false);
     }
   };
 
   const handleCancelOrder = async (orderId) => {
-    setCancellingOrderId(orderId); // Set cancellingOrderId to the order ID
+    setCancellingOrderId(orderId);
     dispatch({ type: "CANCEL_ORDER_REQUEST" });
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
-      // In a real app, send the orderId to your backend API to cancel the order
       dispatch({ type: "CANCEL_ORDER_SUCCESS", payload: orderId });
-      // Update the orders array in the Redux store (you might need to fetch the updated order history)
-      // ...
     } catch (error) {
       dispatch({ type: "CANCEL_ORDER_FAILURE", payload: error.message });
-      // ... (display error message) ...
     } finally {
-      setCancellingOrderId(null); // Reset cancellingOrderId in finally block
+      setCancellingOrderId(null);
     }
   };
 
@@ -174,17 +162,13 @@ const OrderHistory = ({
     dispatch({ type: "RETURN_ORDER_REQUEST" });
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
-      // In a real app, send the orderId and returnReason to your backend API to return the order
       dispatch({
         type: "RETURN_ORDER_SUCCESS",
         payload: { orderId, reason: returnReason },
       });
-      // Update the orders array in the Redux store (you might need to fetch the updated order history)
-      // ...
-      setReturnReason(""); // Clear the return reason input
+      setReturnReason("");
     } catch (error) {
       dispatch({ type: "RETURN_ORDER_FAILURE", payload: error.message });
-      // ... (display error message) ...
     }
   };
   if (isLoading) {
@@ -216,7 +200,6 @@ const OrderHistory = ({
             <DropdownItem onClick={() => handleStatusChange("Returned")}>
               Returned
             </DropdownItem>
-            {/* Add more status options as needed */}
           </DropdownMenu>
         </Dropdown>
         <div className="mb-3">
@@ -242,7 +225,7 @@ const OrderHistory = ({
         <div className="text-center">
           <Spinner color="primary" />
         </div>
-      ) : error ? ( // Show error message if there's an error fetching order history
+      ) : error ? (
         <Alert color="danger">{error}</Alert>
       ) : orders.length === 0 ? (
         <p>You have no previous orders.</p>
@@ -255,14 +238,12 @@ const OrderHistory = ({
               <th>Items</th>
               <th>Total</th>
               <th>Status</th>
-              <th>Actions</th> {/* Add a new column for actions */}
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredOrders.map((order) => (
               <React.Fragment key={order.id}>
-                {" "}
-                {/* Use Fragment to wrap multiple elements */}
                 <tr>
                   <td>{order.id}</td>
                   <td>{formatDate(order.date)}</td> {/* Format the date */}
@@ -278,11 +259,11 @@ const OrderHistory = ({
                                 width: "50px",
                                 height: "50px",
                                 objectFit: "cover",
-                              }} // Add inline styles
+                              }}
                               onError={(e) => {
                                 e.target.onerror = null;
                                 e.target.src = "path/to/placeholder-image.jpg";
-                              }} // Add onError handler
+                              }}
                             />
                             {item.name}
                           </Link>{" "}
@@ -339,15 +320,14 @@ const OrderHistory = ({
                                 onChange={(e) =>
                                   setReturnReason(e.target.value)
                                 }
-                                valid={returnReasonValid} // Add valid prop
-                                invalid={!returnReasonValid} // Add invalid prop
+                                valid={returnReasonValid}
+                                invalid={!returnReasonValid}
                               />
                               {!returnReasonValid && (
                                 <FormFeedback>
                                   Please provide a reason for return
                                 </FormFeedback>
                               )}{" "}
-                              {/* Show feedback */}
                             </>
                           )}
                         </>
@@ -363,12 +343,8 @@ const OrderHistory = ({
                 {expandedOrderId === order.id && (
                   <tr>
                     <td colSpan="6">
-                      {" "}
-                      {/* Span across all columns */}
-                      {/* Display detailed order information here */}
                       <h4>Order Details</h4>
                       <p>Order ID: {order.id}</p>
-                      {/* ... other order details like shipping address, payment method, etc. */}
                       <h5>Items:</h5>
                       <ul>
                         {order.items.map((item) => (
@@ -396,7 +372,6 @@ const OrderHistory = ({
           ) : trackingInfo ? (
             <div>
               <p>Order ID: {trackingInfo.orderId}</p>
-              {/* Display other tracking details */}
               <p>Status: {trackingInfo.status}</p>
               <p>
                 Estimated Delivery: {formatDate(trackingInfo.estimatedDelivery)}
@@ -439,9 +414,9 @@ const OrderHistory = ({
 const mapStateToProps = (state) => ({
   orders: state.product.orders,
   currentUser: state.auth.user,
-  isLoading: state.product.isLoading, // Get isLoading from Redux store
-  error: state.product.error, // Get error from productReducer
-  trackingError: state.product.trackingError, // Add trackingError
+  isLoading: state.product.isLoading,
+  error: state.product.error,
+  trackingError: state.product.trackingError,
 });
 
 export default connect(mapStateToProps)(OrderHistory);

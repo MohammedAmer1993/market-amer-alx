@@ -1,7 +1,6 @@
-// src/store/reducers/authReducer.js
 const initialState = {
   isAuthenticated: false,
-  user: null, // Add user object here
+  user: null,
 };
 
 const authReducer = (state = initialState, action) => {
@@ -10,28 +9,28 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state,
         isAuthenticated: true,
-        user: action.payload, // Assuming you pass user details in the payload
+        user: action.payload,
       };
-    case "LOGOUT": // We'll handle logout later
+    case "LOGOUT":
       return { ...state, isAuthenticated: false };
-    case "LOGIN_REQUEST": // Add this case
+    case "LOGIN_REQUEST":
       return { ...state, isLoading: true };
-    case "LOGIN_SUCCESS": // Add this case
+    case "LOGIN_SUCCESS":
       return {
         ...state,
         isLoading: false,
         isAuthenticated: true,
         user: action.payload.user,
       };
-    case "LOGIN_FAILURE": // Add this case
+    case "LOGIN_FAILURE":
       return { ...state, isLoading: false, error: action.payload };
-    case "REGISTER_REQUEST": // Add this case
+    case "REGISTER_REQUEST":
       return { ...state, isLoading: true };
-    case "REGISTER_SUCCESS": // Add this case
+    case "REGISTER_SUCCESS":
       return { ...state, isLoading: false };
-    case "REGISTER_FAILURE": // Add this case
+    case "REGISTER_FAILURE":
       return { ...state, isLoading: false, error: action.payload };
-    case "CLEAR_AUTH_ERROR": // Add this case
+    case "CLEAR_AUTH_ERROR":
       return { ...state, error: null };
     default:
       return state;

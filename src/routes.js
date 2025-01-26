@@ -1,4 +1,3 @@
-// src/routes.js
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import ProductList from "./components/ProductList";
@@ -21,7 +20,6 @@ const AppRoutes = ({ isAuthenticated }) => (
     <Route path="/login" element={<Login />} />
     <Route path="/register" element={<Register />} />
     <Route path="/logout" element={<Navigate to="/login" replace />} />
-    {/* Add other routes as needed */}
   </Routes>
 );
 

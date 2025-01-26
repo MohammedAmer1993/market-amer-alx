@@ -1,6 +1,6 @@
 const initialState = {
-  isLoading: false, // Add isLoading to the initial state
-  trackingError: null, // Add trackingError to the initial state
+  isLoading: false,
+  trackingError: null,
   products: [
     {
       id: 1,
@@ -195,107 +195,101 @@ const initialState = {
       ],
       total: 1240,
     },
-  ], // We'll add order details later
+  ],
 };
 
 const productReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "RETURN_ORDER_REQUEST": // Add this case
+    case "RETURN_ORDER_REQUEST":
       return { ...state, isLoading: true };
-    case "RETURN_ORDER_SUCCESS": // Add this case
-      // ... update orders in the state ...
+    case "RETURN_ORDER_SUCCESS":
       return { ...state, isLoading: false };
-    case "RETURN_ORDER_FAILURE": // Add this case
+    case "RETURN_ORDER_FAILURE":
       return { ...state, isLoading: false, error: action.payload };
-    case "CANCEL_ORDER_REQUEST": // Add this case
+    case "CANCEL_ORDER_REQUEST":
       return { ...state, isLoading: true };
-    case "CANCEL_ORDER_SUCCESS": // Add this case
-      // ... update orders in the state ...
+    case "CANCEL_ORDER_SUCCESS":
       return { ...state, isLoading: false };
-    case "CANCEL_ORDER_FAILURE": // Add this case
+    case "CANCEL_ORDER_FAILURE":
       return { ...state, isLoading: false, error: action.payload };
-    case "CLEAR_SELLER_PROFILE_ERROR": // Add this case
+    case "CLEAR_SELLER_PROFILE_ERROR":
       return { ...state, error: null };
-    case "CLEAR_PRODUCT_LIST_ERROR": // Add this case
+    case "CLEAR_PRODUCT_LIST_ERROR":
       return { ...state, error: null };
-    case "CLEAR_ORDER_HISTORY_ERROR": // Add this case
+    case "CLEAR_ORDER_HISTORY_ERROR":
       return { ...state, error: null };
-    case "CLEAR_TRACKING_ERROR": // Add this case
+    case "CLEAR_TRACKING_ERROR":
       return { ...state, trackingError: null };
-    case "CLEAR_CART_ERROR": // Add this case
+    case "CLEAR_CART_ERROR":
       return { ...state, error: null };
-    case "CLEAR_PRODUCT_ERROR": // Add this case
+    case "CLEAR_PRODUCT_ERROR":
       return { ...state, error: null };
     case "TRACK_ORDER_REQUEST":
-      return { ...state, isLoading: true, trackingError: null }; // Reset trackingError on request
+      return { ...state, isLoading: true, trackingError: null };
     case "TRACK_ORDER_SUCCESS":
       return { ...state, isLoading: false, trackingInfo: action.payload };
     case "TRACK_ORDER_FAILURE":
-      return { ...state, isLoading: false, trackingError: action.payload }; // Set trackingError
-    case "REMOVE_FROM_CART_REQUEST": // Add this case
+      return { ...state, isLoading: false, trackingError: action.payload };
+    case "REMOVE_FROM_CART_REQUEST":
       return { ...state, isLoading: true };
-    case "REMOVE_FROM_CART_SUCCESS": // Add this case
-      // ... update cart in the state ...
+    case "REMOVE_FROM_CART_SUCCESS":
       return { ...state, isLoading: false };
-    case "REMOVE_FROM_CART_FAILURE": // Add this case
+    case "REMOVE_FROM_CART_FAILURE":
       return { ...state, isLoading: false, error: action.payload };
 
-    case "ADD_TO_CART_REQUEST": // Add this case
+    case "ADD_TO_CART_REQUEST":
       return { ...state, isLoading: true };
-    case "ADD_TO_CART_SUCCESS": // Add this case
-      // ... update cart in the state ...
+    case "ADD_TO_CART_SUCCESS":
       return { ...state, isLoading: false };
-    case "ADD_TO_CART_FAILURE": // Add this case
+    case "ADD_TO_CART_FAILURE":
       return { ...state, isLoading: false, error: action.payload };
-    case "FETCH_REVIEWS_REQUEST": // Add this case
+    case "FETCH_REVIEWS_REQUEST":
       return { ...state, isLoading: true };
-    case "FETCH_REVIEWS_SUCCESS": // Add this case
-      return { ...state, isLoading: false, reviews: action.payload }; // Assuming you store reviews separately
-    case "FETCH_REVIEWS_FAILURE": // Add this case
+    case "FETCH_REVIEWS_SUCCESS":
+      return { ...state, isLoading: false, reviews: action.payload };
+    case "FETCH_REVIEWS_FAILURE":
       return { ...state, isLoading: false, error: action.payload };
-    case "SUBMIT_REVIEW_REQUEST": // Add this case
+    case "SUBMIT_REVIEW_REQUEST":
       return { ...state, isLoading: true };
-    case "SUBMIT_REVIEW_SUCCESS": // Add this case
-      // ... update reviews in the state ...
+    case "SUBMIT_REVIEW_SUCCESS":
       return { ...state, isLoading: false };
-    case "SUBMIT_REVIEW_FAILURE": // Add this case
+    case "SUBMIT_REVIEW_FAILURE":
       return { ...state, isLoading: false, error: action.payload };
-    case "TRACK_ORDER_REQUEST": // Add this case
+    case "TRACK_ORDER_REQUEST":
       return { ...state, isLoading: true };
-    case "TRACK_ORDER_SUCCESS": // Add this case
-      return { ...state, isLoading: false, trackingInfo: action.payload }; // Assuming you store tracking info separately
-    case "TRACK_ORDER_FAILURE": // Add this case
+    case "TRACK_ORDER_SUCCESS":
+      return { ...state, isLoading: false, trackingInfo: action.payload };
+    case "TRACK_ORDER_FAILURE":
       return { ...state, isLoading: false, error: action.payload };
-    case "PLACE_ORDER_REQUEST": // Add this case
+    case "PLACE_ORDER_REQUEST":
       return { ...state, isLoading: true };
-    case "PLACE_ORDER_SUCCESS": // Add this case
-      // ... update orders and clear cart ...
+    case "PLACE_ORDER_SUCCESS":
       return { ...state, isLoading: false };
-    case "PLACE_ORDER_FAILURE": // Add this case
+    case "PLACE_ORDER_FAILURE":
       return { ...state, isLoading: false, error: action.payload };
-    case "FETCH_ORDER_HISTORY_REQUEST": // Add this case
+    case "FETCH_ORDER_HISTORY_REQUEST":
       return { ...state, isLoading: true };
-    case "FETCH_ORDER_HISTORY_SUCCESS": // Add this case
+    case "FETCH_ORDER_HISTORY_SUCCESS":
       return { ...state, isLoading: false, orders: action.payload };
-    case "FETCH_ORDER_HISTORY_FAILURE": // Add this case
+    case "FETCH_ORDER_HISTORY_FAILURE":
       return { ...state, isLoading: false, error: action.payload };
-    case "FETCH_SELLER_PROFILE_REQUEST": // Add this case
+    case "FETCH_SELLER_PROFILE_REQUEST":
       return { ...state, isLoading: true };
-    case "FETCH_SELLER_PROFILE_SUCCESS": // Add this case
-      return { ...state, isLoading: false, sellerProfile: action.payload }; // Assuming you store seller profile separately
-    case "FETCH_SELLER_PROFILE_FAILURE": // Add this case
+    case "FETCH_SELLER_PROFILE_SUCCESS":
+      return { ...state, isLoading: false, sellerProfile: action.payload };
+    case "FETCH_SELLER_PROFILE_FAILURE":
       return { ...state, isLoading: false, error: action.payload };
-    case "FETCH_PRODUCT_DETAILS_REQUEST": // Add this case
+    case "FETCH_PRODUCT_DETAILS_REQUEST":
       return { ...state, isLoading: true };
-    case "FETCH_PRODUCT_DETAILS_SUCCESS": // Add this case
-      return { ...state, isLoading: false, productDetails: action.payload }; // Assuming you store details separately
-    case "FETCH_PRODUCT_DETAILS_FAILURE": // Add this case
+    case "FETCH_PRODUCT_DETAILS_SUCCESS":
+      return { ...state, isLoading: false, productDetails: action.payload };
+    case "FETCH_PRODUCT_DETAILS_FAILURE":
       return { ...state, isLoading: false, error: action.payload };
-    case "FETCH_PRODUCTS_REQUEST": // Add this case for fetching products
+    case "FETCH_PRODUCTS_REQUEST":
       return { ...state, isLoading: true };
-    case "FETCH_PRODUCTS_SUCCESS": // Add this case for successful fetch
+    case "FETCH_PRODUCTS_SUCCESS":
       return { ...state, isLoading: false, products: action.payload };
-    case "FETCH_PRODUCTS_FAILURE": // Add this case for failed fetch
+    case "FETCH_PRODUCTS_FAILURE":
       return { ...state, isLoading: false, error: action.payload };
     case "ADD_TO_CART":
       return {
@@ -307,13 +301,12 @@ const productReducer = (state = initialState, action) => {
         ...state,
         cart: state.cart.filter((item) => item.id !== action.payload),
       };
-    case "PLACE_ORDER": // We'll define this action later
+    case "PLACE_ORDER":
       return {
         ...state,
         orders: [...state.orders, action.payload],
-        cart: [], // Clear the cart after placing an order
+        cart: [],
       };
-    // Add more cases for other actions later (e.g., place order, track order)
     default:
       return state;
   }

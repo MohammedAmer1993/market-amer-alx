@@ -24,11 +24,11 @@ import {
 } from "reactstrap";
 
 const ProductDetails = ({ products, addToCart, isLoading, error }) => {
-  const [modalOpen, setModalOpen] = useState(false); // State for modal visibility
-  const [reviewText, setReviewText] = useState(""); // State for review text
-  const [reviews, setReviews] = useState([]); // State to store reviews
+  const [modalOpen, setModalOpen] = useState(false);
+  const [reviewText, setReviewText] = useState("");
+  const [reviews, setReviews] = useState([]);
   const [reviewTextValid, setReviewTextValid] = useState(true);
-  const [submittingReview, setSubmittingReview] = useState(false); // State for submitting review
+  const [submittingReview, setSubmittingReview] = useState(false);
 
   const { productId } = useParams();
   const product = products.find((p) => p.id === parseInt(productId, 10));
@@ -38,8 +38,7 @@ const ProductDetails = ({ products, addToCart, isLoading, error }) => {
     const fetchReviews = async () => {
       dispatch({ type: "FETCH_REVIEWS_REQUEST" });
       try {
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
-        // In a real app, fetch reviews from your backend API based on product.id
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         const storedReviews = localStorage.getItem(`reviews-${product.id}`);
         const reviewsData = storedReviews ? JSON.parse(storedReviews) : [];
         dispatch({ type: "FETCH_REVIEWS_SUCCESS", payload: reviewsData });
@@ -47,7 +46,7 @@ const ProductDetails = ({ products, addToCart, isLoading, error }) => {
         dispatch({ type: "FETCH_REVIEWS_FAILURE", payload: error.message });
       }
       return () => {
-        dispatch({ type: "CLEAR_PRODUCT_ERROR" }); // Dispatch a new action to clear product errors
+        dispatch({ type: "CLEAR_PRODUCT_ERROR" });
       };
     };
 
@@ -61,13 +60,11 @@ const ProductDetails = ({ products, addToCart, isLoading, error }) => {
     if (!isValid) {
       return; // Don't proceed with submission if validation fails
     }
-    // Make handleReviewSubmit async
-    setSubmittingReview(true); // Set submittingReview to true
+    setSubmittingReview(true);
 
     dispatch({ type: "SUBMIT_REVIEW_REQUEST" });
     try {
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
-      // In a real app, send review data to your backend API
       console.log("New review submitted:", {
         productId: product.id,
         review: reviewText,
@@ -76,11 +73,10 @@ const ProductDetails = ({ products, addToCart, isLoading, error }) => {
         type: "SUBMIT_REVIEW_SUCCESS",
         payload: { productId: product.id, review: reviewText },
       });
-      // ... (update reviews state and local storage) ...
     } catch (error) {
       dispatch({ type: "SUBMIT_REVIEW_FAILURE", payload: error.message });
     } finally {
-      setSubmittingReview(false); // Set submittingReview to false in finally block
+      setSubmittingReview(false);
     }
   };
 
@@ -103,7 +99,6 @@ const ProductDetails = ({ products, addToCart, isLoading, error }) => {
       dispatch({ type: "FETCH_PRODUCT_DETAILS_REQUEST" });
       try {
         await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
-        // In a real app, fetch details from your API based on productId
         dispatch({ type: "FETCH_PRODUCT_DETAILS_SUCCESS", payload: product }); // Assuming product has all details
       } catch (error) {
         dispatch({
@@ -202,7 +197,6 @@ const ProductDetails = ({ products, addToCart, isLoading, error }) => {
                   <CardSubtitle className="mb-2 text-muted" tag="h6">
                     ${similarProduct.price}
                   </CardSubtitle>
-                  {/* Display seller information */}
                   <CardText>Sold by: {similarProduct.seller}</CardText>
                 </CardBody>
               </Link>
@@ -227,13 +221,12 @@ const ProductDetails = ({ products, addToCart, isLoading, error }) => {
                 id="reviewText"
                 value={reviewText}
                 onChange={(e) => setReviewText(e.target.value)}
-                valid={reviewTextValid} // Add valid prop
-                invalid={!reviewTextValid} // Add invalid prop
+                valid={reviewTextValid}
+                invalid={!reviewTextValid}
               />
               {!reviewTextValid && (
                 <FormFeedback>Please enter your review</FormFeedback>
               )}{" "}
-              {/* Show feedback */}
             </FormGroup>
           </Form>
         </ModalBody>
@@ -273,8 +266,8 @@ const ProductDetails = ({ products, addToCart, isLoading, error }) => {
 };
 const mapStateToProps = (state) => ({
   products: state.product.products,
-  isLoading: state.product.isLoading, // Get isLoading from Redux store
-  error: state.product.error, // Get error from productReducer
+  isLoading: state.product.isLoading,
+  error: state.product.error,
 });
 
 const mapDispatchToProps = (dispatch) => ({
