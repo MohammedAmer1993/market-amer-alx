@@ -1,25 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { connect, useDispatch } from "react-redux";
-import { Table, Button, Input, Spinner, Alert } from "reactstrap"; // Import Alert
+import { Table, Button, Input, Spinner, Alert } from "reactstrap";
 import { useNavigate } from "react-router-dom";
 
 const Cart = ({ cart, removeFromCart, placeOrder, isLoading, error }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [promoCode, setPromoCode] = useState("");
-  const [placingOrder, setPlacingOrder] = useState(false); // State for placing order
-  const [removingItemId, setRemovingItemId] = useState(null); // State for removing item
+  const [placingOrder, setPlacingOrder] = useState(false);
+  const [removingItemId, setRemovingItemId] = useState(null);
 
   const calculateTotal = () => {
     let total = cart.reduce((total, item) => total + item.price, 0);
-    // Apply promo code logic here (e.g., if promoCode === 'DISCOUNT10', apply 10% discount)
     if (promoCode === "DISCOUNT10") {
-      total *= 0.9; // Apply 10% discount
+      total *= 0.9;
     }
     return total;
   };
 
-  // Function to format price with currency symbol
   const formatPrice = (price) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -28,58 +26,51 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading, error }) => {
   };
 
   const handlePlaceOrder = async () => {
-    // Make handlePlaceOrder async
-    dispatch({ type: "PLACE_ORDER_REQUEST" }); // Dispatch request action
-    setPlacingOrder(true); // Set placingOrder to true
+    dispatch({ type: "PLACE_ORDER_REQUEST" });
+    setPlacingOrder(true);
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
-      // In a real app, send order details to your backend API
-      const order = {
-        // ... order details ...
-      };
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const order = {};
       dispatch({ type: "PLACE_ORDER_SUCCESS", payload: order });
       navigate("/order-history");
     } catch (error) {
       dispatch({ type: "PLACE_ORDER_FAILURE", payload: error.message });
     } finally {
-      setPlacingOrder(false); // Set placingOrder to false in finally block
+      setPlacingOrder(false);
     }
   };
 
   const handleRemoveFromCart = async (productId) => {
-    // Make handleRemoveFromCart async
-    setRemovingItemId(productId); // Set removingItemId to the product ID
-
+    setRemovingItemId(productId);
     dispatch({ type: "REMOVE_FROM_CART_REQUEST" });
+
     try {
-      await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate API call delay
-      // In a real app, send the productId to your backend API to remove from cart
+      await new Promise((resolve) => setTimeout(resolve, 500));
       dispatch({ type: "REMOVE_FROM_CART_SUCCESS", payload: productId });
-      removeFromCart(productId); // This might be redundant if you update the cart in the reducer
+      removeFromCart(productId);
     } catch (error) {
       dispatch({ type: "REMOVE_FROM_CART_FAILURE", payload: error.message });
     } finally {
-      setRemovingItemId(null); // Reset removingItemId in finally block
+      setRemovingItemId(null);
     }
   };
 
   useEffect(() => {
-    // Clear the error message when the component unmounts
     return () => {
-      dispatch({ type: "CLEAR_CART_ERROR" }); // Dispatch a new action to clear cart errors
+      dispatch({ type: "CLEAR_CART_ERROR" });
     };
   }, [dispatch]);
 
   return (
-    <div className="container">
-      <h2>Shopping Cart</h2>
+    <div className="container mt-5">
+      <h2 className="text-center mb-4">Shopping Cart</h2>
       {cart.length === 0 ? (
-        <p>Your cart is empty.</p>
+        <p className="text-center text-muted">Your cart is empty.</p>
       ) : (
         <div>
-          <Table>
-            <thead>
+          <Table bordered hover responsive className="mb-4">
+            <thead className="table-light">
               <tr>
                 <th>Product</th>
                 <th>Price</th>
@@ -91,22 +82,27 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading, error }) => {
               {cart.map((item) => (
                 <tr key={item.id}>
                   <td>{item.name}</td>
-                  <td>{formatPrice(item.price)}</td> {/* Format the price */}
-                  <td>1</td> {/* For now, we'll assume quantity is 1 */}
+                  <td>{formatPrice(item.price)}</td>
+                  <td>1</td>
                   <td>
-                    {isLoading || placingOrder ? ( // Show spinner while placing order
-                      <Spinner color="primary" />
+                    {isLoading || placingOrder ? (
+                      <Spinner color="primary" size="sm" />
                     ) : (
-                      <Button color="primary" onClick={handlePlaceOrder}>
+                      <Button
+                        color="success"
+                        size="sm"
+                        onClick={handlePlaceOrder}
+                      >
                         Place Order
                       </Button>
                     )}
-                    {isLoading || removingItemId === item.id ? ( // Show spinner while removing
-                      <Spinner size="sm" color="danger" />
+                    {isLoading || removingItemId === item.id ? (
+                      <Spinner size="sm" color="danger" className="ms-2" />
                     ) : (
                       <Button
                         color="danger"
                         size="sm"
+                        className="ms-2"
                         onClick={() => handleRemoveFromCart(item.id)}
                       >
                         Remove
@@ -117,19 +113,21 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading, error }) => {
               ))}
             </tbody>
           </Table>
-          {/* Promo Code Input */}
-          <div className="mb-3">
+
+          <div className="d-flex justify-content-between align-items-center mb-3">
             <Input
               type="text"
               placeholder="Enter promo code"
               value={promoCode}
               onChange={(e) => setPromoCode(e.target.value)}
+              className="w-50 me-2"
             />
+            <p className="fw-bold mb-0">
+              Total: {formatPrice(calculateTotal())}
+            </p>
           </div>
-          {error && <Alert color="danger">{error}</Alert>}{" "}
-          {/* Display error message */}
-          {/* Display total with 2 decimal places */}
-          <p>Total: ${calculateTotal().toFixed(2)}</p>{" "}
+
+          {error && <Alert color="danger">{error}</Alert>}
         </div>
       )}
     </div>
@@ -138,8 +136,8 @@ const Cart = ({ cart, removeFromCart, placeOrder, isLoading, error }) => {
 
 const mapStateToProps = (state) => ({
   cart: state.product.cart,
-  isLoading: state.product.isLoading, // Get isLoading from Redux store
-  error: state.product.error, // Get error from productReducer
+  isLoading: state.product.isLoading,
+  error: state.product.error,
 });
 
 const mapDispatchToProps = (dispatch) => ({

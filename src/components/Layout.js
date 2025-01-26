@@ -7,8 +7,6 @@ import { connect } from "react-redux";
 const Layout = ({ children, isAuthenticated, logout }) => (
   <div>
     <Navbar color="primary" dark expand="md">
-      {" "}
-      {/* Change color to "primary" and dark */}
       <Container>
         <Link to="/" className="navbar-brand">
           My Amazon Clone
@@ -34,8 +32,7 @@ const Layout = ({ children, isAuthenticated, logout }) => (
               <NavItem>
                 <NavLink tag={Link} to="/profile">
                   Profile
-                </NavLink>{" "}
-                {/* Add Profile link */}
+                </NavLink>
               </NavItem>
               <NavItem>
                 <NavLink tag={Link} to="/logout" onClick={logout}>
@@ -60,15 +57,10 @@ const Layout = ({ children, isAuthenticated, logout }) => (
         </Nav>
       </Container>
     </Navbar>
-    <Container className="pt-4">
-      {" "}
-      {/* Add a Container for the main content */}
-      {children}
-    </Container>
+
+    <Container className="pt-4">{children}</Container>
 
     <footer className="footer mt-5 py-3 bg-light">
-      {" "}
-      {/* Add a footer */}
       <Container className="text-center">
         <p>&copy; {new Date().getFullYear()} My Amazon Clone</p>
       </Container>
@@ -77,12 +69,11 @@ const Layout = ({ children, isAuthenticated, logout }) => (
 );
 
 const mapStateToProps = (state) => ({
-  isAuthenticated: state.auth.isAuthenticated, // We'll add authReducer later
+  isAuthenticated: state.auth.isAuthenticated,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  // ...
-  logout: () => dispatch({ type: "LOGOUT" }), // Dispatch logout action
+  logout: () => dispatch({ type: "LOGOUT" }),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Layout);

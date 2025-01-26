@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"; // Import useEffect
+import React, { useState, useEffect } from "react";
 import {
   Form,
   FormGroup,
@@ -22,34 +22,30 @@ const Login = ({ login, isLoading, error }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // Clear the error message when the component unmounts
     return () => {
       dispatch({ type: "CLEAR_AUTH_ERROR" });
     };
   }, [dispatch]);
 
   const handleLogin = async (e) => {
-    // Make handleLogin async
     e.preventDefault();
 
-    // Basic validation (you can add more complex validation as needed)
     const isUsernameValid = username.trim() !== "";
     const isPasswordValid = password.trim() !== "";
     setUsernameValid(isUsernameValid);
     setPasswordValid(isPasswordValid);
 
     if (!isUsernameValid || !isPasswordValid) {
-      return; // Don't proceed with login if validation fails
+      return;
     }
     dispatch({ type: "LOGIN_REQUEST" });
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate API call delay
-      // In a real app, send login credentials to your backend API
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       if (username === "user" && password === "password") {
         dispatch({
           type: "LOGIN_SUCCESS",
           payload: { user: { name: "John Doe" } },
-        }); // Simulate user data
+        });
         navigate("/");
       } else {
         dispatch({
@@ -65,7 +61,7 @@ const Login = ({ login, isLoading, error }) => {
   return (
     <div className="container">
       <h2>Login</h2>
-      {isLoading ? ( // Show spinner while logging in
+      {isLoading ? (
         <div className="text-center">
           <Spinner color="primary" />
         </div>
@@ -79,13 +75,12 @@ const Login = ({ login, isLoading, error }) => {
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              valid={usernameValid} // Add valid prop
-              invalid={!usernameValid} // Add invalid prop
+              valid={usernameValid}
+              invalid={!usernameValid}
             />
             {!usernameValid && (
               <FormFeedback>Please enter a username</FormFeedback>
-            )}{" "}
-            {/* Show feedback */}
+            )}
           </FormGroup>
           <FormGroup>
             <Label for="password">Password</Label>
@@ -95,19 +90,19 @@ const Login = ({ login, isLoading, error }) => {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              valid={passwordValid} // Add valid prop
-              invalid={!passwordValid} // Add invalid prop
+              valid={passwordValid}
+              invalid={!passwordValid}
             />
             {!passwordValid && (
               <FormFeedback>Please enter a password</FormFeedback>
-            )}{" "}
-            {/* Show feedback */}
+            )}
           </FormGroup>
-          {error && <Alert color="danger">{error}</Alert>}{" "}
-          {/* Display error message */}
-          <Button type="submit">Login</Button>
+          {error && <Alert color="danger">{error}</Alert>}
+          <Button type="submit" color="primary" className="me-2">
+            Login
+          </Button>
           <Link to="/register">
-            <Button>Register</Button>
+            <Button color="secondary">Register</Button>
           </Link>
         </Form>
       )}
@@ -116,12 +111,12 @@ const Login = ({ login, isLoading, error }) => {
 };
 
 const mapStateToProps = (state) => ({
-  isLoading: state.auth.isLoading, // Get isLoading from authReducer
-  error: state.auth.error, // Get error from authReducer
+  isLoading: state.auth.isLoading,
+  error: state.auth.error,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  login: () => dispatch({ type: "LOGIN" }), // We'll define this action in authReducer
+  login: () => dispatch({ type: "LOGIN" }),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);
